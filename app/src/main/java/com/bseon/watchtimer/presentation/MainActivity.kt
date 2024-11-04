@@ -4,7 +4,7 @@
  * changes to the libraries and their usages.
  */
 
-package com.example.watchtimer.presentation
+package com.bseon.watchtimer.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,8 +22,8 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
-import com.example.watchtimer.R
-import com.example.watchtimer.presentation.theme.WatchTimerTheme
+import com.bseon.watchtimer.R
+import com.bseon.watchtimer.presentation.theme.WatchTimerTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

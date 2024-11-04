@@ -1,4 +1,4 @@
-package com.example.watchtimer.complication
+package com.bseon.watchtimer.complication
 
 import androidx.wear.watchface.complications.data.ComplicationData
 import androidx.wear.watchface.complications.data.ComplicationType

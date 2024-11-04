@@ -1,4 +1,4 @@
-package com.example.watchtimer.tile
+package com.bseon.watchtimer.tile
 
 import android.content.Context
 import androidx.compose.runtime.Composable
