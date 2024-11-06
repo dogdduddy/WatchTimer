@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.watchtimer"
+    namespace = "com.bseon.watchtimer"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.watchtimer"
+        applicationId = "com.bseon.watchtimer"
         minSdk = 30
         targetSdk = 34
         versionCode = 1
