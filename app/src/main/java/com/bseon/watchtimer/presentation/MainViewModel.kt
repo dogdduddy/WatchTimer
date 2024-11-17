@@ -21,6 +21,10 @@ class MainViewModel: ViewModel() {
 
     val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
 
+    fun setTimerDuration(duration: Long) {
+        customTimerDuration.postValue(duration)
+    }
+
     fun startTimer() {
         timerJob = viewModelScope.launch(start = CoroutineStart.LAZY) {
             withContext(Dispatchers.IO) {
@@ -61,7 +65,7 @@ class MainViewModel: ViewModel() {
     }
 
     companion object {
-        const val MIllIS_IN_FUTURE = 3600000L
+        const val MIllIS_IN_FUTURE = 1800000L
         const val TICK_INTERVAL = 1000L
     }
 
