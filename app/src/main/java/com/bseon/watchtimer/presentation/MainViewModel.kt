@@ -16,12 +16,14 @@ class MainViewModel: ViewModel() {
 
     private lateinit var timerJob: Job
 
-    val customTimerDuration: MutableLiveData<Long> = MutableLiveData(MIllIS_IN_FUTURE)
+    private var initialTimerDuration: Long = MIllIS_IN_FUTURE
+    val customTimerDuration: MutableLiveData<Long> = MutableLiveData(initialTimerDuration)
     private var oldTime: Long = 0
 
     val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
 
     fun setTimerDuration(duration: Long) {
+        initialTimerDuration = duration
         customTimerDuration.postValue(duration)
     }
 
@@ -61,7 +63,7 @@ class MainViewModel: ViewModel() {
             timerJob.cancel()
         }
         customTimerState.postValue(TimerState.STOPPED)
-        customTimerDuration.postValue(MIllIS_IN_FUTURE)
+        customTimerDuration.postValue(initialTimerDuration)
     }
 
     companion object {
