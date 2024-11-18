@@ -13,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Picker
+import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberPickerState
 import com.bseon.watchtimer.R
@@ -78,63 +80,79 @@ fun TimerScreen(viewModel: MainViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        Text(text = "Minute")
+        TimerTitle()
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        Box(
-            modifier = Modifier
+        TimerContent(timerState, pickerState, timeLeft)
+
+        Spacer(modifier = Modifier.height(15.dp))
+
+        TimerButton(viewModel, timerState, pickerState)
+
+    }
+}
+
+@Composable
+fun TimerTitle() {
+    Text(text = "Minute")
+}
+
+@Composable
+fun TimerContent(timerState: MainViewModel.TimerState, pickerState: PickerState, timeLeft: Long) {
+    Box(
+        modifier = Modifier
             .fillMaxWidth()
             .height(70.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            if (timerState == MainViewModel.TimerState.STOPPED) {
-                Picker(
-                    state = pickerState,
-                    contentDescription = "Number Picker",
-                    separation = 1.dp,) {
-                    Text(text = "$it", fontSize = 24.sp)
-                }
-            } else {
-                Text (
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    text = timeLeft.toMinutes().toString()
-                )
+        contentAlignment = Alignment.Center,
+    ) {
+        if (timerState == MainViewModel.TimerState.STOPPED) {
+            Picker(
+                state = pickerState,
+                contentDescription = "Number Picker",
+                separation = 1.dp,) {
+                Text(text = "$it", fontSize = 24.sp)
             }
+        } else {
+            Text (
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                fontSize = 24.sp,
+                text = timeLeft.toMinutes().toString()
+            )
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(15.dp))
-
+@Composable
+fun TimerButton(viewModel: MainViewModel, timerState: MainViewModel.TimerState, pickerState: PickerState) {
+    Button(
+        modifier = Modifier
+            .height(30.dp)
+            .width(30.dp),
+        onClick = {
+            when(timerState) {
+                MainViewModel.TimerState.RUNNING -> viewModel.pauseTimer()
+                MainViewModel.TimerState.PAUSED -> viewModel.resumeTimer()
+                MainViewModel.TimerState.STOPPED -> {
+                    viewModel.setTimerDuration(pickerState.selectedOption.toMillis())
+                    viewModel.startTimer()
+                }
+            }
+        }) {
+        Text(text = when(timerState) {
+            MainViewModel.TimerState.RUNNING -> stringResource(id = R.string.state_pause)
+            MainViewModel.TimerState.PAUSED -> stringResource(id = R.string.state_resume)
+            MainViewModel.TimerState.STOPPED -> stringResource(id = R.string.state_start)
+        })
+    }
+    if(timerState == MainViewModel.TimerState.PAUSED) {
         Button(
-            modifier = Modifier
-                .height(30.dp)
-                .width(30.dp),
             onClick = {
-                when(timerState) {
-                    MainViewModel.TimerState.RUNNING -> viewModel.pauseTimer()
-                    MainViewModel.TimerState.PAUSED -> viewModel.resumeTimer()
-                    MainViewModel.TimerState.STOPPED -> {
-                        viewModel.setTimerDuration(pickerState.selectedOption.toMillis())
-                        viewModel.startTimer()
-                    }
-                }
+                viewModel.stopTimer()
             }) {
-            Text(text = when(timerState) {
-                MainViewModel.TimerState.RUNNING -> stringResource(id = R.string.state_pause)
-                MainViewModel.TimerState.PAUSED -> stringResource(id = R.string.state_resume)
-                MainViewModel.TimerState.STOPPED -> stringResource(id = R.string.state_start)
-            })
-        }
-        if(timerState == MainViewModel.TimerState.PAUSED) {
-            Button(
-                onClick = {
-                    viewModel.stopTimer()
-                }) {
-                Text(text = "Stop")
-            }
+            Text(text = "Stop")
         }
     }
 }
