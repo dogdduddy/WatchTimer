@@ -9,7 +9,9 @@ package com.bseon.watchtimer.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +27,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -128,39 +131,44 @@ fun TimerContent(timerState: MainViewModel.TimerState, pickerState: PickerState,
 @Composable
 fun TimerButton(viewModel: MainViewModel, timerState: MainViewModel.TimerState, pickerState: PickerState) {
     Row {
-        Button(
+        val painterResource = when(timerState) {
+            MainViewModel.TimerState.RUNNING -> R.drawable.ic_pause_btn
+            MainViewModel.TimerState.PAUSED -> R.drawable.ic_run_btn
+            MainViewModel.TimerState.STOPPED -> R.drawable.ic_run_btn
+        }
+
+        Image(
+            painter = painterResource(painterResource),
             modifier = Modifier
                 .height(30.dp)
-                .width(30.dp),
-            onClick = {
-                when(timerState) {
-                    MainViewModel.TimerState.RUNNING -> viewModel.pauseTimer()
-                    MainViewModel.TimerState.PAUSED -> viewModel.resumeTimer()
-                    MainViewModel.TimerState.STOPPED -> {
-                        viewModel.setTimerDuration(pickerState.selectedOption.toMillis())
-                        viewModel.startTimer()
+                .width(30.dp)
+                .clickable {
+                    when(timerState) {
+                        MainViewModel.TimerState.RUNNING -> viewModel.pauseTimer()
+                        MainViewModel.TimerState.PAUSED -> viewModel.resumeTimer()
+                        MainViewModel.TimerState.STOPPED -> {
+                            viewModel.setTimerDuration(pickerState.selectedOption.toMillis())
+                            viewModel.startTimer()
+                        }
                     }
-                }
-            }) {
-            Text(text = when(timerState) {
-                MainViewModel.TimerState.RUNNING -> stringResource(id = R.string.state_pause)
-                MainViewModel.TimerState.PAUSED -> stringResource(id = R.string.state_resume)
-                MainViewModel.TimerState.STOPPED -> stringResource(id = R.string.state_start)
-            })
-        }
+                },
+            contentDescription = "Run Button",
+
+        )
 
         if(timerState == MainViewModel.TimerState.PAUSED) {
             Spacer(modifier = Modifier.width(15.dp))
 
-            Button(
+            Image(
+                painter = painterResource(R.drawable.ic_stop_btn),
                 modifier = Modifier
                     .height(30.dp)
-                    .width(30.dp),
-                onClick = {
-                    viewModel.stopTimer()
-                }) {
-                Text(text = "Stop")
-            }
+                    .width(30.dp)
+                    .clickable {
+                        viewModel.stopTimer()
+                    },
+                contentDescription = "Stop Button",
+            )
         }
     }
 }
