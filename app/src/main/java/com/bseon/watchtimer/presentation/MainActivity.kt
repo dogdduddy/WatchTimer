@@ -123,14 +123,13 @@ fun TimerScreen(viewModel: MainViewModel) {
                 .height(30.dp)
                 .width(30.dp),
             onClick = {
-
-                // ViewModel에서 값을 postValue로 반영하는데, 데이터 반영 전에 초기 값으로 작업이 실행 되는 경우는 없을지 확인이 필요하다.
-                viewModel.setTimerDuration(pickerState.selectedOption.toMillis())
-
                 when(timerState) {
                     MainViewModel.TimerState.RUNNING -> viewModel.pauseTimer()
                     MainViewModel.TimerState.PAUSED -> viewModel.resumeTimer()
-                    MainViewModel.TimerState.STOPPED -> viewModel.startTimer()
+                    MainViewModel.TimerState.STOPPED -> {
+                        viewModel.setTimerDuration(pickerState.selectedOption.toMillis())
+                        viewModel.startTimer()
+                    }
                 }
             }) {
             Text(text = when(timerState) {
