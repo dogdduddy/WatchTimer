@@ -127,32 +127,40 @@ fun TimerContent(timerState: MainViewModel.TimerState, pickerState: PickerState,
 
 @Composable
 fun TimerButton(viewModel: MainViewModel, timerState: MainViewModel.TimerState, pickerState: PickerState) {
-    Button(
-        modifier = Modifier
-            .height(30.dp)
-            .width(30.dp),
-        onClick = {
-            when(timerState) {
-                MainViewModel.TimerState.RUNNING -> viewModel.pauseTimer()
-                MainViewModel.TimerState.PAUSED -> viewModel.resumeTimer()
-                MainViewModel.TimerState.STOPPED -> {
-                    viewModel.setTimerDuration(pickerState.selectedOption.toMillis())
-                    viewModel.startTimer()
-                }
-            }
-        }) {
-        Text(text = when(timerState) {
-            MainViewModel.TimerState.RUNNING -> stringResource(id = R.string.state_pause)
-            MainViewModel.TimerState.PAUSED -> stringResource(id = R.string.state_resume)
-            MainViewModel.TimerState.STOPPED -> stringResource(id = R.string.state_start)
-        })
-    }
-    if(timerState == MainViewModel.TimerState.PAUSED) {
+    Row {
         Button(
+            modifier = Modifier
+                .height(30.dp)
+                .width(30.dp),
             onClick = {
-                viewModel.stopTimer()
+                when(timerState) {
+                    MainViewModel.TimerState.RUNNING -> viewModel.pauseTimer()
+                    MainViewModel.TimerState.PAUSED -> viewModel.resumeTimer()
+                    MainViewModel.TimerState.STOPPED -> {
+                        viewModel.setTimerDuration(pickerState.selectedOption.toMillis())
+                        viewModel.startTimer()
+                    }
+                }
             }) {
-            Text(text = "Stop")
+            Text(text = when(timerState) {
+                MainViewModel.TimerState.RUNNING -> stringResource(id = R.string.state_pause)
+                MainViewModel.TimerState.PAUSED -> stringResource(id = R.string.state_resume)
+                MainViewModel.TimerState.STOPPED -> stringResource(id = R.string.state_start)
+            })
+        }
+
+        if(timerState == MainViewModel.TimerState.PAUSED) {
+            Spacer(modifier = Modifier.width(15.dp))
+
+            Button(
+                modifier = Modifier
+                    .height(30.dp)
+                    .width(30.dp),
+                onClick = {
+                    viewModel.stopTimer()
+                }) {
+                Text(text = "Stop")
+            }
         }
     }
 }
