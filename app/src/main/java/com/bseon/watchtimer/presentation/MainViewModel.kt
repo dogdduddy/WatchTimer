@@ -29,9 +29,9 @@ class MainViewModel: ViewModel() {
         timerJob = viewModelScope.launch(start = CoroutineStart.LAZY) {
             withContext(Dispatchers.IO) {
                 oldTime = System.currentTimeMillis()
-                while (customTimerDuration.value!! > TICK_INTERVAL && isActive) {
+                while (customTimerDuration.value!! != 0L && isActive) {
                     val delayMills = System.currentTimeMillis() - oldTime
-                    if (delayMills == TICK_INTERVAL) {
+                    if (delayMills == MINUTES_TICK_INTERVAL) {
                         customTimerDuration.postValue(customTimerDuration.value!! - delayMills)
                         oldTime = System.currentTimeMillis()
                     }
@@ -66,7 +66,8 @@ class MainViewModel: ViewModel() {
 
     companion object {
         const val MIllIS_IN_FUTURE = 1800000L
-        const val TICK_INTERVAL = 1000L
+        const val SECOND_TICK_INTERVAL = 1000L
+        const val MINUTES_TICK_INTERVAL = 60000L
     }
 
     enum class TimerState {
