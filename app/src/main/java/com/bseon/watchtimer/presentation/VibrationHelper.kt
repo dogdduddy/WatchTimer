@@ -32,15 +32,15 @@ class VibrationHelper(private val context: Context) {
         }
     }
 
-    fun waveVibrate(duration: Long = 500) {
-        val timings = longArrayOf(0, 100, 100, 100)
+    fun waveVibrate(vibrationDuration: Long = 200, pauseDuration: Long = 200, repeatState: Int = 0) {
+        val timings = longArrayOf(vibrationDuration, pauseDuration, vibrationDuration, pauseDuration)
         val amplitudes = intArrayOf(0, 255, 0, 255)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val vibrationEffect = VibrationEffect.createWaveform(timings, amplitudes, 0)
+            val vibrationEffect = VibrationEffect.createWaveform(timings, amplitudes, repeatState)
             vibrator.vibrate(vibrationEffect)
         } else {
-            vibrator.vibrate(timings, 0)
+            vibrator.vibrate(timings, repeatState)
         }
     }
 

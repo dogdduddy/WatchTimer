@@ -87,8 +87,8 @@ fun TimerScreen(viewModel: MainViewModel) {
     ) {
 
         if (timeLeft == 0L) {
-            viewModel.pauseTimer()
-            vibrationHelper.vibrate()
+            viewModel.finishTimer()
+            vibrationHelper.waveVibrate()
         }
 
         TimerTitle()
@@ -99,7 +99,7 @@ fun TimerScreen(viewModel: MainViewModel) {
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        TimerButton(viewModel, timerState, pickerState)
+        TimerButton(viewModel, timerState, pickerState, vibrationHelper)
 
     }
 }
@@ -142,12 +142,13 @@ fun TimerContent(
 }
 
 @Composable
-fun TimerButton(viewModel: MainViewModel, timerState: MainViewModel.TimerState, pickerState: PickerState) {
+fun TimerButton(viewModel: MainViewModel, timerState: MainViewModel.TimerState, pickerState: PickerState, vibrationHelper: VibrationHelper) {
     Row {
         val painterResource = when(timerState) {
             MainViewModel.TimerState.RUNNING -> R.drawable.ic_pause_btn
             MainViewModel.TimerState.PAUSED -> R.drawable.ic_run_btn
             MainViewModel.TimerState.STOPPED -> R.drawable.ic_run_btn
+            MainViewModel.TimerState.FINISHED -> R.drawable.ic_stop_btn
         }
 
         Image(
@@ -164,6 +165,10 @@ fun TimerButton(viewModel: MainViewModel, timerState: MainViewModel.TimerState, 
                                 pickerIndexToDisplay(pickerState.selectedOption).toMillis()
                             )
                             viewModel.startTimer()
+                        }
+                        MainViewModel.TimerState.FINISHED -> {
+                            vibrationHelper.cancelVibrate()
+                            viewModel.stopTimer()
                         }
                     }
                 },

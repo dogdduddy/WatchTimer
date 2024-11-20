@@ -63,6 +63,10 @@ class MainViewModel: ViewModel() {
         customTimerState.postValue(TimerState.STOPPED)
         customTimerDuration.postValue(initialTimerDuration)
     }
+    fun finishTimer() {
+        customTimerState.postValue(TimerState.FINISHED)
+        customTimerDuration.postValue(0)
+    }
 
     companion object {
         const val MIllIS_IN_FUTURE = 1800000L
@@ -73,6 +77,7 @@ class MainViewModel: ViewModel() {
     enum class TimerState {
         RUNNING,
         PAUSED,
-        STOPPED
+        STOPPED,
+        FINISHED
     }
 }
