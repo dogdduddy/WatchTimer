@@ -74,10 +74,4 @@ class MainViewModel: ViewModel() {
         const val MINUTES_TICK_INTERVAL = 60000L
     }
 
-    enum class TimerState {
-        RUNNING,
-        PAUSED,
-        STOPPED,
-        FINISHED
-    }
 }
