@@ -8,7 +8,7 @@ import android.os.VibratorManager
 
 class VibrationHelper(private val context: Context) {
 
-    lateinit var vibrator: Vibrator
+    private lateinit var vibrator: Vibrator
 
     init {
         setVibrator()
