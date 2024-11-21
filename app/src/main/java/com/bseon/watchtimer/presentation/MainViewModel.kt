@@ -3,6 +3,7 @@ package com.bseon.watchtimer.presentation
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.wear.compose.material.PickerState
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,12 +21,31 @@ class MainViewModel: ViewModel() {
 
     val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
 
-    fun setTimerDuration(duration: Long) {
+    fun onTimerAction(action: TimerAction, pickerState: PickerState, vibrationHelper: VibrationHelper) {
+        when (action) {
+            TimerAction.START -> {
+                setTimerDuration(pickerIndexToDisplay(pickerState.selectedOption).toMillis())
+                startTimer()
+            }
+            TimerAction.PAUSED -> pauseTimer()
+            TimerAction.RESUME -> resumeTimer()
+            TimerAction.STOP -> {
+                vibrationHelper.cancelVibrate()
+                stopTimer()
+            }
+            TimerAction.FINISH -> {
+                vibrationHelper.vibrate()
+                finishTimer()
+            }
+        }
+    }
+
+    private fun setTimerDuration(duration: Long) {
         initialTimerDuration = duration
         customTimerDuration.postValue(duration)
     }
 
-    fun startTimer() {
+    private fun startTimer() {
         timerJob = viewModelScope.launch(start = CoroutineStart.LAZY) {
             withContext(Dispatchers.IO) {
                 oldTime = System.currentTimeMillis()
@@ -45,25 +65,25 @@ class MainViewModel: ViewModel() {
         }
     }
 
-    fun pauseTimer() {
+    private fun pauseTimer() {
         if(timerJob.isActive) {
             customTimerState.postValue(TimerState.PAUSED)
             timerJob.cancel()
         }
     }
-    fun resumeTimer() {
+    private fun resumeTimer() {
         if (customTimerState.value == TimerState.PAUSED) {
             startTimer()
         }
     }
-    fun stopTimer() {
+    private fun stopTimer() {
         if (timerJob.isActive) {
             timerJob.cancel()
         }
         customTimerState.postValue(TimerState.STOPPED)
         customTimerDuration.postValue(initialTimerDuration)
     }
-    fun finishTimer() {
+    private fun finishTimer() {
         customTimerState.postValue(TimerState.FINISHED)
         customTimerDuration.postValue(0)
     }

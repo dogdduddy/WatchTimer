@@ -48,10 +48,7 @@ fun TimerScreen(viewModel: MainViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        if (timeLeft == 0L) {
-            viewModel.finishTimer()
-            vibrationHelper.waveVibrate()
-        }
+        if (timeLeft == 0L) { viewModel.onTimerAction(TimerAction.FINISH, pickerState, vibrationHelper) }
 
         TimerTitle()
 
@@ -61,7 +58,9 @@ fun TimerScreen(viewModel: MainViewModel) {
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        TimerButton(viewModel, timerState, pickerState, vibrationHelper)
+        TimerButton(timerState) {
+            viewModel.onTimerAction(it, pickerState, vibrationHelper)
+        }
 
     }
 }
@@ -104,7 +103,7 @@ fun TimerContent(
 }
 
 @Composable
-fun TimerButton(viewModel: MainViewModel, timerState: TimerState, pickerState: PickerState, vibrationHelper: VibrationHelper) {
+fun TimerButton(timerState: TimerState, onActionClick: (TimerAction) -> Unit) {
     Row {
         val painterResource = when(timerState) {
             TimerState.RUNNING -> R.drawable.ic_pause_btn
@@ -120,18 +119,10 @@ fun TimerButton(viewModel: MainViewModel, timerState: TimerState, pickerState: P
                 .clip(CircleShape)
                 .clickable {
                     when(timerState) {
-                        TimerState.RUNNING -> viewModel.pauseTimer()
-                        TimerState.PAUSED -> viewModel.resumeTimer()
-                        TimerState.STOPPED -> {
-                            viewModel.setTimerDuration(
-                                pickerIndexToDisplay(pickerState.selectedOption).toMillis()
-                            )
-                            viewModel.startTimer()
-                        }
-                        TimerState.FINISHED -> {
-                            vibrationHelper.cancelVibrate()
-                            viewModel.stopTimer()
-                        }
+                        TimerState.RUNNING -> onActionClick(TimerAction.PAUSED)
+                        TimerState.PAUSED -> onActionClick(TimerAction.RESUME)
+                        TimerState.STOPPED -> onActionClick(TimerAction.START)
+                        TimerState.FINISHED -> onActionClick(TimerAction.STOP)
                     }
                 },
             contentDescription = "Run Button",
@@ -145,9 +136,7 @@ fun TimerButton(viewModel: MainViewModel, timerState: TimerState, pickerState: P
                 modifier = Modifier
                     .size(30.dp)
                     .clip(CircleShape)
-                    .clickable {
-                        viewModel.stopTimer()
-                    },
+                    .clickable { onActionClick(TimerAction.STOP) },
                 contentDescription = "Stop Button",
             )
         }
