@@ -33,14 +33,11 @@ import com.bseon.watchtimer.R
 
 
 @Composable
-fun TimerScreen(viewModel: MainViewModel) {
+fun TimerScreen(viewModel: MainViewModel, vibrationHelper: VibrationHelper) {
     val pickerState = rememberPickerState(60, 30)
 
     val timerState by viewModel.customTimerState.observeAsState(TimerState.STOPPED)
     val timeLeft by viewModel.customTimerDuration.observeAsState(MainViewModel.MIllIS_IN_FUTURE)
-
-    val context = LocalContext.current
-    val vibrationHelper = remember { VibrationHelper(context) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),

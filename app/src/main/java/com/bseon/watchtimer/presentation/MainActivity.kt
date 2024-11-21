@@ -49,15 +49,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         viewModel = MainViewModel()
-        setContent {
-            WearApp(viewModel)
-        }
+        val vibrationHelper = VibrationHelper(this)
 
+        setContent {
+            WearApp(viewModel, vibrationHelper)
+        }
     }
 }
 
 @Composable
-fun WearApp(viewModel: MainViewModel) {
+fun WearApp(viewModel: MainViewModel, vibrationHelper: VibrationHelper) {
     WatchTimerTheme {
         Column(
             modifier = Modifier
@@ -65,7 +66,7 @@ fun WearApp(viewModel: MainViewModel) {
                 .background(MaterialTheme.colors.background),
             verticalArrangement = Arrangement.Center
         ) {
-            TimerScreen(viewModel)
+            TimerScreen(viewModel, vibrationHelper)
         }
     }
 }
