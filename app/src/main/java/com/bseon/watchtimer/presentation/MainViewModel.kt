@@ -11,15 +11,15 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainViewModel: ViewModel() {
+open class MainViewModel: ViewModel() {
 
     private lateinit var timerJob: Job
 
     private var initialTimerDuration: Long = MIllIS_IN_FUTURE
-    val customTimerDuration: MutableLiveData<Long> = MutableLiveData(initialTimerDuration)
+    open val customTimerDuration: MutableLiveData<Long> = MutableLiveData(initialTimerDuration)
     private var oldTime: Long = 0
 
-    val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
+    open val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
 
     fun onTimerAction(action: TimerAction, pickerState: PickerState, vibrationHelper: VibrationHelper) {
         when (action) {

@@ -75,7 +75,7 @@ fun WearApp(viewModel: MainViewModel, vibrationHelper: VibrationHelper) {
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
-    WearApp(MainViewModel())
+    WearApp(MainViewModel(), VibrationHelper(LocalContext.current))
 }
 
 fun pickerIndexToDisplay(index: Int): Int {

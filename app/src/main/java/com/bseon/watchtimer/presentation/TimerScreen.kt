@@ -23,8 +23,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
 import androidx.wear.compose.material.Picker
 import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Text
@@ -138,4 +141,16 @@ fun TimerButton(timerState: TimerState, onActionClick: (TimerAction) -> Unit) {
             )
         }
     }
+}
+
+@Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "Stopped State")
+@Composable
+fun WearAppPreview() {
+    WearApp(
+        viewModel = object : MainViewModel() {
+            override val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.RUNNING)
+            override val customTimerDuration: MutableLiveData<Long> = MutableLiveData(60000L) // 1 minute
+        },
+        vibrationHelper = VibrationHelper(LocalContext.current)
+    )
 }
