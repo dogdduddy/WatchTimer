@@ -29,7 +29,7 @@ jobs:
           path: app/build/outputs/apk/debug
 
       - name: Slack - Upload APK
-        uses: MeilCli/slack-upload-file@v3
+        uses: MeilCli/slack-upload-file@v4
         with:
           slack_token: ${{ secrets.SLACK_TOKEN }}
           channel_id: ${{ secrets.SLACK_CHANNEL }}
