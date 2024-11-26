@@ -19,7 +19,9 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.MaterialTheme
 import com.bseon.watchtimer.presentation.theme.WatchTimerTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel:MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
