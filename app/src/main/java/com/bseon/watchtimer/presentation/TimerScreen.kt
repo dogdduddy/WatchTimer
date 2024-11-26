@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -15,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,12 +43,12 @@ fun TimerScreen(viewModel: MainViewModel, vibrationHelper: VibrationHelper) {
     val timeLeft by viewModel.customTimerDuration.observeAsState(MainViewModel.MIllIS_IN_FUTURE)
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        if (timeLeft == 0L) { viewModel.onTimerAction(TimerAction.FINISH, pickerState, vibrationHelper) }
+        if (timeLeft == 0) { viewModel.onTimerAction(TimerAction.FINISH, vibrationHelper) }
 
         TimerTitle()
 
@@ -59,7 +59,7 @@ fun TimerScreen(viewModel: MainViewModel, vibrationHelper: VibrationHelper) {
         Spacer(modifier = Modifier.height(15.dp))
 
         TimerButton(timerState) {
-            viewModel.onTimerAction(it, pickerState, vibrationHelper)
+            viewModel.onTimerAction(it, vibrationHelper)
         }
 
     }
@@ -74,7 +74,7 @@ fun TimerTitle() {
 fun TimerContent(
     timerState: TimerState,
     pickerState: PickerState,
-    timeLeft: Long,
+    timeLeft: Int,
 ) {
     Box(
         modifier = Modifier
@@ -96,7 +96,7 @@ fun TimerContent(
                 textAlign = TextAlign.Center,
                 color = Color.White,
                 fontSize = 50.sp,
-                text = timeLeft.toMinutes().toString()
+                text = timeLeft.toString()
             )
         }
     }
@@ -149,7 +149,7 @@ fun WearAppPreview() {
     WearApp(
         viewModel = object : MainViewModel() {
             override val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.RUNNING)
-            override val customTimerDuration: MutableLiveData<Long> = MutableLiveData(60000L) // 1 minute
+            override val customTimerDuration: MutableLiveData<Int> = MutableLiveData(30) // 1 minute
         },
         vibrationHelper = VibrationHelper(LocalContext.current)
     )

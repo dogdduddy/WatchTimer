@@ -15,16 +15,16 @@ open class MainViewModel: ViewModel() {
 
     private lateinit var timerJob: Job
 
-    private var initialTimerDuration: Long = MIllIS_IN_FUTURE
-    open val customTimerDuration: MutableLiveData<Long> = MutableLiveData(initialTimerDuration)
+    private var initialTimerDuration: Int = MIllIS_IN_FUTURE
+    open val customTimerDuration: MutableLiveData<Int> = MutableLiveData(initialTimerDuration)
     private var oldTime: Long = 0
 
     open val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
 
-    fun onTimerAction(action: TimerAction, pickerState: PickerState, vibrationHelper: VibrationHelper) {
+    fun onTimerAction(action: TimerAction, vibrationHelper: VibrationHelper) {
         when (action) {
             TimerAction.START -> {
-                setTimerDuration(pickerIndexToDisplay(pickerState.selectedOption).toMillis())
+                setTimerDuration(pickerIndexToDisplay(customTimerDuration.value!!))
                 startTimer()
             }
             TimerAction.PAUSED -> pauseTimer()
@@ -40,7 +40,7 @@ open class MainViewModel: ViewModel() {
         }
     }
 
-    private fun setTimerDuration(duration: Long) {
+    private fun setTimerDuration(duration: Int) {
         initialTimerDuration = duration
         customTimerDuration.postValue(duration)
     }
@@ -49,10 +49,10 @@ open class MainViewModel: ViewModel() {
         timerJob = viewModelScope.launch(start = CoroutineStart.LAZY) {
             withContext(Dispatchers.IO) {
                 oldTime = System.currentTimeMillis()
-                while (customTimerDuration.value!! != 0L && isActive) {
+                while (customTimerDuration.value!! != 0 && isActive) {
                     val delayMills = System.currentTimeMillis() - oldTime
                     if (delayMills == MINUTES_TICK_INTERVAL) {
-                        customTimerDuration.postValue(customTimerDuration.value!! - delayMills)
+                        customTimerDuration.postValue(customTimerDuration.value!! - delayMills.toMinutes())
                         oldTime = System.currentTimeMillis()
                     }
                 }
@@ -89,7 +89,7 @@ open class MainViewModel: ViewModel() {
     }
 
     companion object {
-        const val MIllIS_IN_FUTURE = 1800000L
+        const val MIllIS_IN_FUTURE = 30
         const val SECOND_TICK_INTERVAL = 1000L
         const val MINUTES_TICK_INTERVAL = 60000L
     }
