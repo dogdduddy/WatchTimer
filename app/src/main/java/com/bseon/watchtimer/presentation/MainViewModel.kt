@@ -3,7 +3,6 @@ package com.bseon.watchtimer.presentation
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.wear.compose.material.PickerState
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -11,29 +10,31 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-open class MainViewModel: ViewModel() {
+class MainViewModel(
+    private val vibrationHelper: VibrationHelper
+): ViewModel() {
 
     private lateinit var timerJob: Job
 
     private var initialTimerDuration: Int = MIllIS_IN_FUTURE
-    open val customTimerDuration: MutableLiveData<Int> = MutableLiveData(initialTimerDuration)
+    val customTimerDuration: MutableLiveData<Int> = MutableLiveData(initialTimerDuration)
     private var oldTime: Long = 0
 
-    open val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
+    val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
 
-    fun onTimerAction(action: TimerAction, vibrationHelper: VibrationHelper) {
-        when (action) {
-            TimerAction.START -> {
-                setTimerDuration(pickerIndexToDisplay(customTimerDuration.value!!))
+    fun onTimerIntent(intent: TimerIntent) {
+        when (intent) {
+            is TimerIntent.TimerStartedIntent -> {
+                setTimerDuration(pickerIndexToDisplay(intent.duration))
                 startTimer()
             }
-            TimerAction.PAUSED -> pauseTimer()
-            TimerAction.RESUME -> resumeTimer()
-            TimerAction.STOP -> {
+            TimerIntent.TimerPausedIntent -> pauseTimer()
+            TimerIntent.TimerResumedIntent -> resumeTimer()
+            TimerIntent.TimerCancelledIntent -> {
                 vibrationHelper.cancelVibrate()
                 stopTimer()
             }
-            TimerAction.FINISH -> {
+            TimerIntent.TimerFinishedIntent -> {
                 vibrationHelper.vibrate()
                 finishTimer()
             }

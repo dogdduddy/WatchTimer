@@ -27,24 +27,24 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = MainViewModel()
         val vibrationHelper = VibrationHelper(this)
+        viewModel = MainViewModel(vibrationHelper)
 
         setContent {
-            WearApp(viewModel, vibrationHelper)
+            WearApp(viewModel)
         }
     }
 }
 
 @Composable
-fun WearApp(viewModel: MainViewModel, vibrationHelper: VibrationHelper) {
+fun WearApp(viewModel: MainViewModel) {
     WatchTimerTheme {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background)
         ) {
-            TimerScreen(viewModel, vibrationHelper)
+            TimerScreen(viewModel)
         }
     }
 }
@@ -53,7 +53,7 @@ fun WearApp(viewModel: MainViewModel, vibrationHelper: VibrationHelper) {
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
-    WearApp(MainViewModel(), VibrationHelper(LocalContext.current))
+    WearApp(MainViewModel(VibrationHelper(LocalContext.current)))
 }
 
 fun pickerIndexToDisplay(index: Int): Int {

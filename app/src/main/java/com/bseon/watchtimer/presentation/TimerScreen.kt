@@ -36,7 +36,7 @@ import com.bseon.watchtimer.R
 
 
 @Composable
-fun TimerScreen(viewModel: MainViewModel, vibrationHelper: VibrationHelper) {
+fun TimerScreen(viewModel: MainViewModel) {
     val pickerState = rememberPickerState(60, 30)
 
     val timerState by viewModel.customTimerState.observeAsState(TimerState.STOPPED)
@@ -48,7 +48,7 @@ fun TimerScreen(viewModel: MainViewModel, vibrationHelper: VibrationHelper) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        if (timeLeft == 0) { viewModel.onTimerAction(TimerAction.FINISH, vibrationHelper) }
+        if (timeLeft == 0) { viewModel.onTimerIntent(TimerIntent.TimerFinishedIntent) }
 
         TimerTitle()
 
@@ -58,9 +58,19 @@ fun TimerScreen(viewModel: MainViewModel, vibrationHelper: VibrationHelper) {
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        TimerButton(timerState) {
-            viewModel.onTimerAction(it, vibrationHelper)
-        }
+        TimerButton(timerState,
+            onPrimaryActionClick = {
+                when(timerState) {
+                    TimerState.RUNNING -> viewModel.onTimerIntent(TimerIntent.TimerPausedIntent)
+                    TimerState.PAUSED -> viewModel.onTimerIntent(TimerIntent.TimerResumedIntent)
+                    TimerState.STOPPED -> viewModel.onTimerIntent(TimerIntent.TimerStartedIntent(pickerState.selectedOption))
+                    TimerState.FINISHED -> viewModel.onTimerIntent(TimerIntent.TimerCancelledIntent)
+                }
+            },
+            onSecondaryActionClick = {
+                viewModel.onTimerIntent(TimerIntent.TimerCancelledIntent)
+            }
+        )
 
     }
 }
@@ -103,7 +113,7 @@ fun TimerContent(
 }
 
 @Composable
-fun TimerButton(timerState: TimerState, onActionClick: (TimerAction) -> Unit) {
+fun TimerButton(timerState: TimerState, onPrimaryActionClick: () -> Unit, onSecondaryActionClick: () -> Unit) {
     Row {
         val painterResource = when(timerState) {
             TimerState.RUNNING -> R.drawable.ic_pause_btn
@@ -117,14 +127,7 @@ fun TimerButton(timerState: TimerState, onActionClick: (TimerAction) -> Unit) {
             modifier = Modifier
                 .size(30.dp)
                 .clip(CircleShape)
-                .clickable {
-                    when(timerState) {
-                        TimerState.RUNNING -> onActionClick(TimerAction.PAUSED)
-                        TimerState.PAUSED -> onActionClick(TimerAction.RESUME)
-                        TimerState.STOPPED -> onActionClick(TimerAction.START)
-                        TimerState.FINISHED -> onActionClick(TimerAction.STOP)
-                    }
-                },
+                .clickable { onPrimaryActionClick() },
             contentDescription = "Run Button",
             )
 
@@ -136,7 +139,7 @@ fun TimerButton(timerState: TimerState, onActionClick: (TimerAction) -> Unit) {
                 modifier = Modifier
                     .size(30.dp)
                     .clip(CircleShape)
-                    .clickable { onActionClick(TimerAction.STOP) },
+                    .clickable { onSecondaryActionClick() },
                 contentDescription = "Stop Button",
             )
         }
@@ -146,11 +149,9 @@ fun TimerButton(timerState: TimerState, onActionClick: (TimerAction) -> Unit) {
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "Stopped State")
 @Composable
 fun WearAppPreview() {
-    WearApp(
-        viewModel = object : MainViewModel() {
-            override val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.RUNNING)
-            override val customTimerDuration: MutableLiveData<Int> = MutableLiveData(30) // 1 minute
-        },
-        vibrationHelper = VibrationHelper(LocalContext.current)
-    )
+    val previewViewModel = MainViewModel(VibrationHelper(LocalContext.current)).apply {
+        customTimerState.value = TimerState.RUNNING
+        customTimerDuration.value = 30
+    }
+    WearApp(previewViewModel)
 }
