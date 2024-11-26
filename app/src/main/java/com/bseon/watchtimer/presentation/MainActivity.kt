@@ -44,7 +44,7 @@ fun WearApp(viewModel: MainViewModel) {
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background)
         ) {
-            TimerScreen(viewModel)
+            NavigationSystem()
         }
     }
 }
