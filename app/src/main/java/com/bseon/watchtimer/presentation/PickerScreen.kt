@@ -1,33 +1,20 @@
 package com.bseon.watchtimer.presentation
 
-import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,7 +26,9 @@ import androidx.wear.compose.material.Picker
 import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberPickerState
-import com.bseon.watchtimer.R
+import com.bseon.watchtimer.presentation.timer.TimerButton
+import com.bseon.watchtimer.presentation.timer.TimerTitle
+import com.bseon.watchtimer.presentation.timer.navigationButton
 
 
 @Composable
@@ -96,11 +85,6 @@ fun PickerScreen(navController: NavController) {
 }
 
 @Composable
-fun TimerTitle() {
-    Text(text = "Minute")
-}
-
-@Composable
 fun TimerContent(
     timerState: TimerState,
     pickerState: PickerState,
@@ -130,51 +114,6 @@ fun TimerContent(
             )
         }
     }
-}
-
-@Composable
-fun TimerButton(timerState: TimerState, onPrimaryActionClick: () -> Unit, onSecondaryActionClick: () -> Unit) {
-    Row {
-        val painterResource = when(timerState) {
-            TimerState.RUNNING -> R.drawable.ic_pause_btn
-            TimerState.PAUSED -> R.drawable.ic_run_btn
-            TimerState.STOPPED -> R.drawable.ic_run_btn
-            TimerState.FINISHED -> R.drawable.ic_stop_btn
-        }
-
-        Image(
-            painter = painterResource(painterResource),
-            modifier = Modifier
-                .size(30.dp)
-                .clip(CircleShape)
-                .clickable { onPrimaryActionClick() },
-            contentDescription = "Run Button",
-        )
-
-        if(timerState == TimerState.PAUSED) {
-            Spacer(modifier = Modifier.width(15.dp))
-
-            Image(
-                painter = painterResource(R.drawable.ic_stop_btn),
-                modifier = Modifier
-                    .size(30.dp)
-                    .clip(CircleShape)
-                    .clickable { onSecondaryActionClick() },
-                contentDescription = "Stop Button",
-            )
-        }
-    }
-}
-
-@Composable
-fun navigationButton(modifier: Modifier, onActionClick: () -> Unit) {
-    Image(
-        painter = painterResource(R.drawable.ic_right_arrow),
-        modifier = modifier
-            .size(30.dp)
-            .clickable { onActionClick() },
-        contentDescription = "Navigation Button",
-    )
 }
 
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "App Preview")
