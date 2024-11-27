@@ -1,4 +1,4 @@
-package com.bseon.watchtimer.presentation
+package com.bseon.watchtimer.model
 
 enum class TimerState {
     RUNNING,

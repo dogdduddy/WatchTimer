@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.bseon.watchtimer.R
-import com.bseon.watchtimer.presentation.TimerState
+import com.bseon.watchtimer.model.TimerState
 
 @Composable
 fun TimerButton(timerState: TimerState, onPrimaryActionClick: () -> Unit, onSecondaryActionClick: () -> Unit) {

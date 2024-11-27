@@ -1,4 +1,4 @@
-package com.bseon.watchtimer.presentation
+package com.bseon.watchtimer.utils
 
 fun Int.toMillis(): Long {
     return this.toLong() * 60 * 1000

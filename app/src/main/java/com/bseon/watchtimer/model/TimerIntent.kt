@@ -1,4 +1,4 @@
-package com.bseon.watchtimer.presentation
+package com.bseon.watchtimer.model
 
 sealed class TimerIntent {
 

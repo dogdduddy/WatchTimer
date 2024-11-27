@@ -1,4 +1,4 @@
-package com.bseon.watchtimer.presentation
+package com.bseon.watchtimer.utils
 
 import android.content.Context
 import android.os.Build

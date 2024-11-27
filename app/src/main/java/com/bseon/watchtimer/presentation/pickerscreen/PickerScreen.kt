@@ -1,4 +1,4 @@
-package com.bseon.watchtimer.presentation
+package com.bseon.watchtimer.presentation.pickerscreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,9 +26,16 @@ import androidx.wear.compose.material.Picker
 import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberPickerState
+import com.bseon.watchtimer.presentation.WearApp
 import com.bseon.watchtimer.presentation.timer.TimerButton
 import com.bseon.watchtimer.presentation.timer.TimerTitle
 import com.bseon.watchtimer.presentation.timer.navigationButton
+import com.bseon.watchtimer.model.TimerIntent
+import com.bseon.watchtimer.model.TimerState
+import com.bseon.watchtimer.presentation.pickerIndexToDisplay
+import com.bseon.watchtimer.presentation.viewmodel.FakeMainViewModel
+import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
+import com.bseon.watchtimer.presentation.viewmodel.TimerViewModel
 
 
 @Composable
