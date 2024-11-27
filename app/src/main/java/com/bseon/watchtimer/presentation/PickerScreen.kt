@@ -179,6 +179,6 @@ fun navigationButton(modifier: Modifier, onActionClick: () -> Unit) {
 
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "App Preview")
 @Composable
-fun WearAppPreview() {
+fun PickerPreview() {
     WearApp()
 }

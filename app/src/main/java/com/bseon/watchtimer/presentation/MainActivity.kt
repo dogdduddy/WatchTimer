@@ -37,14 +37,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WearApp() {
+fun WearApp(startDestination: String = "picker") {
     WatchTimerTheme {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background)
         ) {
-            NavigationSystem()
+            NavigationSystem(startDestination)
         }
     }
 }

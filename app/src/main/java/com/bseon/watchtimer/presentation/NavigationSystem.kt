@@ -7,10 +7,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun NavigationSystem() {
+fun NavigationSystem(startDestination: String) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "picker") {
+    NavHost(navController = navController, startDestination = startDestination) {
         composable("picker") {
             PickerScreen(navController)
         }
