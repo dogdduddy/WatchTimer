@@ -57,7 +57,3 @@ fun WearApp(startDestination: String = "picker") {
 fun DefaultPreview() {
     WearApp()
 }
-
-fun pickerIndexToDisplay(index: Int): Int {
-    return index + 1
-}

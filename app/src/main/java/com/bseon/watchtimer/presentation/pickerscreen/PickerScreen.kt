@@ -32,7 +32,6 @@ import com.bseon.watchtimer.presentation.timer.TimerTitle
 import com.bseon.watchtimer.presentation.timer.navigationButton
 import com.bseon.watchtimer.model.TimerIntent
 import com.bseon.watchtimer.model.TimerState
-import com.bseon.watchtimer.presentation.pickerIndexToDisplay
 import com.bseon.watchtimer.presentation.viewmodel.FakeMainViewModel
 import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
 import com.bseon.watchtimer.presentation.viewmodel.TimerViewModel
@@ -109,7 +108,7 @@ fun TimerContent(
                 contentDescription = "Number Picker",
                 separation = 1.dp,
             ) {
-                Text(text = "${pickerIndexToDisplay(it)}", fontSize = 24.sp)
+                Text(text = "${it.inc()}", fontSize = 24.sp)
             }
         } else {
             Text (

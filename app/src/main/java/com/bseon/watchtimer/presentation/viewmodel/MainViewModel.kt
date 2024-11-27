@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bseon.watchtimer.model.TimerIntent
 import com.bseon.watchtimer.model.TimerState
-import com.bseon.watchtimer.presentation.pickerIndexToDisplay
 import com.bseon.watchtimer.utils.VibrationHelper
 import com.bseon.watchtimer.utils.toMinutes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +31,7 @@ class MainViewModel @Inject constructor (
 
     override fun onTimerIntent(intent: TimerIntent) {
         when (intent) {
-            is TimerIntent.TimerSettingIntent -> setTimerDuration(pickerIndexToDisplay(intent.duration))
+            is TimerIntent.TimerSettingIntent -> setTimerDuration(intent.duration.inc())
             TimerIntent.TimerStartedIntent -> startTimer()
             TimerIntent.TimerPausedIntent -> pauseTimer()
             TimerIntent.TimerResumedIntent -> resumeTimer()
