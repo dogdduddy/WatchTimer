@@ -37,7 +37,7 @@ class MainViewModel @Inject constructor (
                 stopTimer()
             }
             TimerIntent.TimerFinishedIntent -> {
-                vibrationHelper.vibrate()
+                vibrationHelper.waveVibrate()
                 finishTimer()
             }
         }
