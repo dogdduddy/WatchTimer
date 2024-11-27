@@ -70,7 +70,12 @@ fun PickerScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        TimerContent(timerState, pickerState, timeLeft)
+        Box {
+            navigationButton(
+                modifier = Modifier.align(Alignment.CenterEnd)
+            ) { navController.navigate("rotary") }
+            TimerContent(timerState, pickerState, timeLeft)
+        }
 
         Spacer(modifier = Modifier.height(15.dp))
 
@@ -159,6 +164,17 @@ fun TimerButton(timerState: TimerState, onPrimaryActionClick: () -> Unit, onSeco
             )
         }
     }
+}
+
+@Composable
+fun navigationButton(modifier: Modifier, onActionClick: () -> Unit) {
+    Image(
+        painter = painterResource(R.drawable.ic_right_arrow),
+        modifier = modifier
+            .size(30.dp)
+            .clickable { onActionClick() },
+        contentDescription = "Navigation Button",
+    )
 }
 
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "App Preview")
