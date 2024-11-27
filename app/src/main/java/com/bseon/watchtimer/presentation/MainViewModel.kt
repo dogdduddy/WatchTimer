@@ -1,5 +1,6 @@
 package com.bseon.watchtimer.presentation
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,17 +16,17 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor (
     private val vibrationHelper: VibrationHelper
-): ViewModel() {
+): ViewModel(), TimerViewModel {
 
     private lateinit var timerJob: Job
 
     private var initialTimerDuration: Int = MIllIS_IN_FUTURE
-    val customTimerDuration: MutableLiveData<Int> = MutableLiveData(initialTimerDuration)
+    override val customTimerDuration: MutableLiveData<Int> = MutableLiveData(initialTimerDuration)
     private var oldTime: Long = 0
 
-    val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
+    override val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
 
-    fun onTimerIntent(intent: TimerIntent) {
+    override fun onTimerIntent(intent: TimerIntent) {
         when (intent) {
             is TimerIntent.TimerSettingIntent -> setTimerDuration(pickerIndexToDisplay(intent.duration))
             TimerIntent.TimerStartedIntent -> startTimer()

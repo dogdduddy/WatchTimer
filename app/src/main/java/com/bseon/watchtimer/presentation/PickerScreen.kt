@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -44,7 +45,12 @@ import com.bseon.watchtimer.R
 @Composable
 fun PickerScreen(navController: NavController) {
     val pickerState = rememberPickerState(60, 30)
-    val viewModel = hiltViewModel<MainViewModel>()
+
+    val viewModel: TimerViewModel = if (LocalInspectionMode.current) {
+        FakeMainViewModel()
+    } else {
+        hiltViewModel<MainViewModel>()
+    }
 
     val timerState by viewModel.customTimerState.observeAsState(TimerState.STOPPED)
     val timeLeft by viewModel.customTimerDuration.observeAsState(MainViewModel.MIllIS_IN_FUTURE)
@@ -155,12 +161,8 @@ fun TimerButton(timerState: TimerState, onPrimaryActionClick: () -> Unit, onSeco
     }
 }
 
-@Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "Stopped State")
+@Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "App Preview")
 @Composable
 fun WearAppPreview() {
-    val previewViewModel = MainViewModel(VibrationHelper(LocalContext.current)).apply {
-        customTimerState.value = TimerState.RUNNING
-        customTimerDuration.value = 30
-    }
-    WearApp(previewViewModel)
+    WearApp()
 }

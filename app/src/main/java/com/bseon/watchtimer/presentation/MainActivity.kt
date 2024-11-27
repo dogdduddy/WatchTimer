@@ -31,13 +31,13 @@ class MainActivity : ComponentActivity() {
         viewModel = MainViewModel(vibrationHelper)
 
         setContent {
-            WearApp(viewModel)
+            WearApp()
         }
     }
 }
 
 @Composable
-fun WearApp(viewModel: MainViewModel) {
+fun WearApp() {
     WatchTimerTheme {
         Box(
             modifier = Modifier
@@ -53,7 +53,7 @@ fun WearApp(viewModel: MainViewModel) {
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
-    WearApp(MainViewModel(VibrationHelper(LocalContext.current)))
+    WearApp()
 }
 
 fun pickerIndexToDisplay(index: Int): Int {
