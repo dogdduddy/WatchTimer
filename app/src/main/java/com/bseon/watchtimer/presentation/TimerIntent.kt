@@ -1,7 +1,10 @@
 package com.bseon.watchtimer.presentation
 
 sealed class TimerIntent {
-    data class TimerStartedIntent(val duration: Int) : TimerIntent()
+
+    data class TimerSettingIntent(val duration: Int) : TimerIntent()
+
+    object TimerStartedIntent : TimerIntent()
 
     object TimerPausedIntent : TimerIntent()
 

@@ -27,10 +27,8 @@ class MainViewModel @Inject constructor (
 
     fun onTimerIntent(intent: TimerIntent) {
         when (intent) {
-            is TimerIntent.TimerStartedIntent -> {
-                setTimerDuration(pickerIndexToDisplay(intent.duration))
-                startTimer()
-            }
+            is TimerIntent.TimerSettingIntent -> setTimerDuration(pickerIndexToDisplay(intent.duration))
+            TimerIntent.TimerStartedIntent -> startTimer()
             TimerIntent.TimerPausedIntent -> pauseTimer()
             TimerIntent.TimerResumedIntent -> resumeTimer()
             TimerIntent.TimerCancelledIntent -> {
