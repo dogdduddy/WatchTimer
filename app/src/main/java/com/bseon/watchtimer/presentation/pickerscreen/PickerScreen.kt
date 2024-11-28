@@ -65,12 +65,7 @@ fun PickerScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        Box {
-            navigationButton(
-                modifier = Modifier.align(Alignment.CenterEnd)
-            ) { navController.navigate("rotary") }
-            TimerContent(timerState, pickerState, timeLeft)
-        }
+        TimerContent(timerState, pickerState, timeLeft)
 
         Spacer(modifier = Modifier.height(15.dp))
 
