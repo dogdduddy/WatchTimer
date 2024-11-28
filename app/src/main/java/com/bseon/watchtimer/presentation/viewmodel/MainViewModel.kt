@@ -1,33 +1,55 @@
 package com.bseon.watchtimer.presentation.viewmodel
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.bseon.watchtimer.TimerService
 import com.bseon.watchtimer.model.TimerIntent
 import com.bseon.watchtimer.model.TimerState
 import com.bseon.watchtimer.utils.VibrationHelper
 import com.bseon.watchtimer.utils.toMinutes
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor (
+    @ApplicationContext private val context: Context,
     private val vibrationHelper: VibrationHelper
 ): ViewModel(), TimerViewModel {
 
     private lateinit var timerJob: Job
 
-    private var initialTimerDuration: Int = MIllIS_IN_FUTURE
+    private var initialTimerDuration: Int = TimerService.MIllIS_IN_FUTURE.toMinutes()
     override val customTimerDuration: MutableLiveData<Int> = MutableLiveData(initialTimerDuration)
-    private var oldTime: Long = 0
 
     override val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
+
+    private val timerReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val timeElapsed = intent?.getIntExtra(TimerService.TIME_DURATION, 0) ?: 0
+            customTimerDuration.postValue(timeElapsed)
+        }
+    }
+    private val finishedReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent) {
+                finishTimer()
+            }
+        }
+    init {
+        val finishedFilter = IntentFilter()
+        finishedFilter.addAction(TimerService.TIMER_FINISHED)
+
+        val filter = IntentFilter(TimerService.TIMER_TICK)
+
+        context.registerReceiver(timerReceiver, filter)
+        context.registerReceiver(finishedReceiver, finishedFilter)
+    }
 
     override fun onTimerIntent(intent: TimerIntent) {
         when (intent) {
@@ -35,14 +57,8 @@ class MainViewModel @Inject constructor (
             TimerIntent.TimerStartedIntent -> startTimer()
             TimerIntent.TimerPausedIntent -> pauseTimer()
             TimerIntent.TimerResumedIntent -> resumeTimer()
-            TimerIntent.TimerCancelledIntent -> {
-                vibrationHelper.cancelVibrate()
-                stopTimer()
-            }
-            TimerIntent.TimerFinishedIntent -> {
-                vibrationHelper.waveVibrate()
-                finishTimer()
-            }
+            TimerIntent.TimerCancelledIntent -> cancelTimer()
+            TimerIntent.TimerFinishedIntent -> null
         }
     }
 
@@ -52,52 +68,45 @@ class MainViewModel @Inject constructor (
     }
 
     private fun startTimer() {
-        timerJob = viewModelScope.launch(start = CoroutineStart.LAZY) {
-            withContext(Dispatchers.IO) {
-                oldTime = System.currentTimeMillis()
-                while (customTimerDuration.value!! != 0 && isActive) {
-                    val delayMills = System.currentTimeMillis() - oldTime
-                    if (delayMills == MINUTES_TICK_INTERVAL) {
-                        customTimerDuration.postValue(customTimerDuration.value!! - delayMills.toMinutes())
-                        oldTime = System.currentTimeMillis()
-                    }
-                }
-            }
-        }
-
-        if(timerJob.isActive.not()) {
-            customTimerState.postValue(TimerState.RUNNING)
-            timerJob.start()
-        }
+        startForegroundService(TimerService.TIMER_STARTED)
+        customTimerState.postValue(TimerState.RUNNING)
     }
 
     private fun pauseTimer() {
-        if(timerJob.isActive) {
-            customTimerState.postValue(TimerState.PAUSED)
-            timerJob.cancel()
-        }
+        startForegroundService(TimerService.TIMER_PAUSED)
+        customTimerState.postValue(TimerState.PAUSED)
     }
+
     private fun resumeTimer() {
         if (customTimerState.value == TimerState.PAUSED) {
-            startTimer()
+            startForegroundService(TimerService.TIMER_RESUMED)
+            customTimerState.postValue(TimerState.RUNNING)
         }
     }
-    private fun stopTimer() {
-        if (timerJob.isActive) {
-            timerJob.cancel()
-        }
+
+    private fun cancelTimer() {
+        startForegroundService(TimerService.TIMER_CANCELLED)
         customTimerState.postValue(TimerState.STOPPED)
         customTimerDuration.postValue(initialTimerDuration)
     }
+
     private fun finishTimer() {
+        vibrationHelper.cancelVibrate()
         customTimerState.postValue(TimerState.FINISHED)
         customTimerDuration.postValue(0)
     }
 
-    companion object {
-        const val MIllIS_IN_FUTURE = 30
-        const val SECOND_TICK_INTERVAL = 1000L
-        const val MINUTES_TICK_INTERVAL = 60000L
+
+    private fun startForegroundService(actionString: String) {
+        val intent = Intent(context, TimerService::class.java).apply {
+            action = actionString
+            putExtra(TimerService.TIME_DURATION, customTimerDuration.value!!)
+        }
+        ContextCompat.startForegroundService(context, intent)
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        context.unregisterReceiver(timerReceiver)
+    }
 }

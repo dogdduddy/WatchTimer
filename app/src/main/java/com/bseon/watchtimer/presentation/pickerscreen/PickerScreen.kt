@@ -26,6 +26,7 @@ import androidx.wear.compose.material.Picker
 import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberPickerState
+import com.bseon.watchtimer.TimerService
 import com.bseon.watchtimer.presentation.WearApp
 import com.bseon.watchtimer.presentation.timer.TimerButton
 import com.bseon.watchtimer.presentation.timer.TimerTitle
@@ -35,6 +36,7 @@ import com.bseon.watchtimer.model.TimerState
 import com.bseon.watchtimer.presentation.viewmodel.FakeMainViewModel
 import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
 import com.bseon.watchtimer.presentation.viewmodel.TimerViewModel
+import com.bseon.watchtimer.utils.toMinutes
 
 
 @Composable
@@ -48,7 +50,7 @@ fun PickerScreen(navController: NavController) {
     }
 
     val timerState by viewModel.customTimerState.observeAsState(TimerState.STOPPED)
-    val timeLeft by viewModel.customTimerDuration.observeAsState(MainViewModel.MIllIS_IN_FUTURE)
+    val timeLeft by viewModel.customTimerDuration.observeAsState(TimerService.MIllIS_IN_FUTURE.toMinutes())
 
     LaunchedEffect(pickerState.selectedOption) {
         viewModel.onTimerIntent(TimerIntent.TimerSettingIntent(pickerState.selectedOption))
@@ -60,7 +62,6 @@ fun PickerScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        if (timeLeft == 0) { viewModel.onTimerIntent(TimerIntent.TimerFinishedIntent) }
         TimerTitle()
 
         Spacer(modifier = Modifier.height(5.dp))

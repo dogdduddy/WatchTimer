@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val vibrationHelper = VibrationHelper(this)
-        viewModel = MainViewModel(vibrationHelper)
+        viewModel = MainViewModel(this, vibrationHelper)
 
         setContent {
             WearApp()
