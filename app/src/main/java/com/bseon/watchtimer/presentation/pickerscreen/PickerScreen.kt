@@ -63,11 +63,11 @@ fun PickerScreen(navController: NavController) {
         if (timeLeft == 0) { viewModel.onTimerIntent(TimerIntent.TimerFinishedIntent) }
         TimerTitle()
 
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(5.dp))
 
         TimerContent(timerState, pickerState, timeLeft)
 
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(5.dp))
 
         TimerButton(timerState,
             onPrimaryActionClick = {
@@ -94,16 +94,15 @@ fun TimerContent(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(70.dp),
+            .height(90.dp),
         contentAlignment = Alignment.Center,
     ) {
         if (timerState == TimerState.STOPPED) {
             Picker(
                 state = pickerState,
                 contentDescription = "Number Picker",
-                separation = 1.dp,
             ) {
-                Text(text = "${it.inc()}", fontSize = 24.sp)
+                Text(text = "${it.inc()}", fontSize = 50.sp)
             }
         } else {
             Text (
