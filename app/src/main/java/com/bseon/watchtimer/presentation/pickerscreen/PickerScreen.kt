@@ -76,7 +76,7 @@ fun PickerScreen(navController: NavController) {
                     TimerState.RUNNING -> viewModel.onTimerIntent(TimerIntent.TimerPausedIntent)
                     TimerState.PAUSED -> viewModel.onTimerIntent(TimerIntent.TimerResumedIntent)
                     TimerState.STOPPED -> viewModel.onTimerIntent(TimerIntent.TimerStartedIntent)
-                    TimerState.FINISHED -> viewModel.onTimerIntent(TimerIntent.TimerCancelledIntent)
+                    TimerState.FINISHED -> viewModel.onTimerIntent(TimerIntent.TimerFinishedIntent)
                 }
             },
             onSecondaryActionClick = {

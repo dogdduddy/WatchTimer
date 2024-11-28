@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,8 +24,6 @@ class MainViewModel @Inject constructor (
     private val vibrationHelper: VibrationHelper
 ): ViewModel(), TimerViewModel {
 
-    private lateinit var timerJob: Job
-
     private var initialTimerDuration: Int = TimerService.MIllIS_IN_FUTURE.toMinutes()
     override val customTimerDuration: MutableLiveData<Int> = MutableLiveData(initialTimerDuration)
 
@@ -38,7 +37,7 @@ class MainViewModel @Inject constructor (
     }
     private val finishedReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
-                finishTimer()
+                finishedReceiver()
             }
         }
     init {
@@ -47,8 +46,8 @@ class MainViewModel @Inject constructor (
 
         val filter = IntentFilter(TimerService.TIMER_TICK)
 
-        context.registerReceiver(timerReceiver, filter)
-        context.registerReceiver(finishedReceiver, finishedFilter)
+        context.registerReceiver(timerReceiver, filter, Context.RECEIVER_EXPORTED)
+        context.registerReceiver(finishedReceiver, finishedFilter, Context.RECEIVER_EXPORTED)
     }
 
     override fun onTimerIntent(intent: TimerIntent) {
@@ -58,7 +57,7 @@ class MainViewModel @Inject constructor (
             TimerIntent.TimerPausedIntent -> pauseTimer()
             TimerIntent.TimerResumedIntent -> resumeTimer()
             TimerIntent.TimerCancelledIntent -> cancelTimer()
-            TimerIntent.TimerFinishedIntent -> null
+            TimerIntent.TimerFinishedIntent -> finishTimer()
         }
     }
 
@@ -90,10 +89,16 @@ class MainViewModel @Inject constructor (
         customTimerDuration.postValue(initialTimerDuration)
     }
 
-    private fun finishTimer() {
-        vibrationHelper.cancelVibrate()
+    private fun finishedReceiver() {
+        vibrationHelper.waveVibrate()
         customTimerState.postValue(TimerState.FINISHED)
         customTimerDuration.postValue(0)
+    }
+
+    private fun finishTimer() {
+        vibrationHelper.cancelVibrate()
+        customTimerState.postValue(TimerState.STOPPED)
+        customTimerDuration.postValue(initialTimerDuration)
     }
 
 
@@ -108,5 +113,6 @@ class MainViewModel @Inject constructor (
     override fun onCleared() {
         super.onCleared()
         context.unregisterReceiver(timerReceiver)
+        context.unregisterReceiver(finishedReceiver)
     }
 }

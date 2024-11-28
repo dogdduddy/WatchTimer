@@ -5,8 +5,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.bseon.watchtimer.model.TimerIntent
@@ -14,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class TimerService : Service() {
@@ -45,7 +48,7 @@ class TimerService : Service() {
     }
 
     private fun startTimer(duration: Int) {
-        startForeground(1, buildNotification())
+        startForeground(1, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
         timeDuration = duration
 
         timerJob = CoroutineScope(Dispatchers.Default).launch {
@@ -60,7 +63,9 @@ class TimerService : Service() {
 
                 updateNotification()
             }
-            finishTimer() // 타이머 완료 시 서비스 종료
+            if (isActive) {
+                finishTimer() // 타이머 완료 시 서비스 종료
+            }
         }
     }
 
