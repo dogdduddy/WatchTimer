@@ -70,6 +70,7 @@ dependencies {
     implementation("com.google.android.horologist:horologist-tiles:0.1.5")
     implementation("androidx.wear.watchface:watchface-complications-data-source-ktx:1.1.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.3.1")
+    implementation("androidx.wear:wear:1.3.0")
     androidTestImplementation(platform("androidx.compose:compose-bom:2022.10.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
