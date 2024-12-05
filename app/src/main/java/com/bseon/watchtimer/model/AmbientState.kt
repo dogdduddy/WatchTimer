@@ -1,4 +1,5 @@
 package com.bseon.watchtimer.model
 
-class AmbientState {
+object AmbientState {
+    var isAmbient: Boolean = false
 }

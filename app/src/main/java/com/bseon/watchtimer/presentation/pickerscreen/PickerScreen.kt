@@ -27,6 +27,7 @@ import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberPickerState
 import com.bseon.watchtimer.TimerService
+import com.bseon.watchtimer.model.AmbientState
 import com.bseon.watchtimer.presentation.WearApp
 import com.bseon.watchtimer.presentation.timer.TimerButton
 import com.bseon.watchtimer.presentation.timer.TimerTitle
@@ -56,33 +57,43 @@ fun PickerScreen(navController: NavController) {
         viewModel.onTimerIntent(TimerIntent.TimerSettingIntent(pickerState.selectedOption))
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-
-        TimerTitle()
-
-        Spacer(modifier = Modifier.height(5.dp))
-
-        TimerContent(timerState, pickerState, timeLeft)
-
-        Spacer(modifier = Modifier.height(5.dp))
-
-        TimerButton(timerState,
-            onPrimaryActionClick = {
-                when(timerState) {
-                    TimerState.RUNNING -> viewModel.onTimerIntent(TimerIntent.TimerPausedIntent)
-                    TimerState.PAUSED -> viewModel.onTimerIntent(TimerIntent.TimerResumedIntent)
-                    TimerState.STOPPED -> viewModel.onTimerIntent(TimerIntent.TimerStartedIntent)
-                    TimerState.FINISHED -> viewModel.onTimerIntent(TimerIntent.TimerFinishedIntent)
-                }
-            },
-            onSecondaryActionClick = {
-                viewModel.onTimerIntent(TimerIntent.TimerCancelledIntent)
-            }
+    if (AmbientState.isAmbient) {
+        Text (
+            modifier = Modifier.fillMaxSize(),
+            textAlign = TextAlign.Center,
+            color = Color.White,
+            fontSize = 50.sp,
+            text = timeLeft.toString()
         )
+    } else {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+
+            TimerTitle()
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            TimerContent(timerState, pickerState, timeLeft)
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            TimerButton(timerState,
+                onPrimaryActionClick = {
+                    when(timerState) {
+                        TimerState.RUNNING -> viewModel.onTimerIntent(TimerIntent.TimerPausedIntent)
+                        TimerState.PAUSED -> viewModel.onTimerIntent(TimerIntent.TimerResumedIntent)
+                        TimerState.STOPPED -> viewModel.onTimerIntent(TimerIntent.TimerStartedIntent)
+                        TimerState.FINISHED -> viewModel.onTimerIntent(TimerIntent.TimerFinishedIntent)
+                    }
+                },
+                onSecondaryActionClick = {
+                    viewModel.onTimerIntent(TimerIntent.TimerCancelledIntent)
+                }
+            )
+        }
     }
 }
 

@@ -16,18 +16,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.wear.ambient.AmbientLifecycleObserver
 import androidx.wear.compose.material.MaterialTheme
 import com.bseon.watchtimer.navigation.NavigationSystem
 import com.bseon.watchtimer.presentation.theme.WatchTimerTheme
 import com.bseon.watchtimer.utils.VibrationHelper
 import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
+import com.bseon.watchtimer.utils.AmbientObserver
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainViewModel
+
+    private val ambientCallback = AmbientObserver()
+    private val ambientObserver = AmbientLifecycleObserver(this, ambientCallback)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycle.addObserver(ambientObserver)
 
         val vibrationHelper = VibrationHelper(this)
         viewModel = MainViewModel(this, vibrationHelper)
@@ -35,6 +43,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             WearApp()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycle.removeObserver(ambientObserver)
     }
 }
 
