@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
         val vibrationHelper = VibrationHelper(this)
         viewModel = MainViewModel(this, vibrationHelper)
 
-         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WatchTimer::WakeLock")
@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
         lifecycle.removeObserver(ambientObserver)
         if (::wakeLock.isInitialized && wakeLock.isHeld) {
-            wakeLock.release() // Wake Lock 해제
+            wakeLock.release()
         }
     }
 }
