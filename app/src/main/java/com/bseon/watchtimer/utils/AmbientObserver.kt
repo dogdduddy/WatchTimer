@@ -1,11 +1,10 @@
 package com.bseon.watchtimer.utils
 
 import androidx.wear.ambient.AmbientLifecycleObserver
-import com.bseon.watchtimer.model.AmbientState
 
 class AmbientObserver: AmbientLifecycleObserver.AmbientLifecycleCallback {
     override fun onEnterAmbient(ambientDetails: AmbientLifecycleObserver.AmbientDetails) {
-        AmbientState.isAmbient = true
+        // ... Called when entering ambient mode.
     }
 
     override fun onExitAmbient() {
@@ -13,6 +12,6 @@ class AmbientObserver: AmbientLifecycleObserver.AmbientLifecycleCallback {
     }
 
     override fun onUpdateAmbient() {
-        AmbientState.isAmbient = false
+        // ... Called when the display needs to be updated in ambient mode.
     }
 }

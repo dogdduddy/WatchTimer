@@ -10,7 +10,13 @@ class FakeMainViewModel : TimerViewModel {
 
     override val customTimerDuration: LiveData<Int> = MutableLiveData(30)
 
+    override val ambientState: LiveData<Boolean> = MutableLiveData(false)
+
     override fun onTimerIntent(intent: TimerIntent) {
+        // Fake 로직
+    }
+
+    override fun onUserInteraction() {
         // Fake 로직
     }
 }

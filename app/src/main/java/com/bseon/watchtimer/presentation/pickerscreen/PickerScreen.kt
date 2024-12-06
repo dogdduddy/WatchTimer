@@ -1,5 +1,6 @@
 package com.bseon.watchtimer.presentation.pickerscreen
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -27,13 +29,12 @@ import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberPickerState
 import com.bseon.watchtimer.TimerService
-import com.bseon.watchtimer.model.AmbientState
 import com.bseon.watchtimer.presentation.WearApp
 import com.bseon.watchtimer.presentation.timer.TimerButton
 import com.bseon.watchtimer.presentation.timer.TimerTitle
-import com.bseon.watchtimer.presentation.timer.navigationButton
 import com.bseon.watchtimer.model.TimerIntent
 import com.bseon.watchtimer.model.TimerState
+import com.bseon.watchtimer.presentation.AnimatedDimScreen
 import com.bseon.watchtimer.presentation.viewmodel.FakeMainViewModel
 import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
 import com.bseon.watchtimer.presentation.viewmodel.TimerViewModel
@@ -50,6 +51,8 @@ fun PickerScreen(navController: NavController) {
         hiltViewModel<MainViewModel>()
     }
 
+    val isAmbient by viewModel.ambientState.observeAsState(false)
+
     val timerState by viewModel.customTimerState.observeAsState(TimerState.STOPPED)
     val timeLeft by viewModel.customTimerDuration.observeAsState(TimerService.MIllIS_IN_FUTURE.toMinutes())
 
@@ -57,9 +60,14 @@ fun PickerScreen(navController: NavController) {
         viewModel.onTimerIntent(TimerIntent.TimerSettingIntent(pickerState.selectedOption))
     }
 
-    if (AmbientState.isAmbient) {
+    if (isAmbient && timerState == TimerState.RUNNING) {
         Text (
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        viewModel.onUserInteraction() // 터치 이벤트 시 초기화
+                    })
+                },
             textAlign = TextAlign.Center,
             color = Color.White,
             fontSize = 50.sp,
@@ -67,7 +75,12 @@ fun PickerScreen(navController: NavController) {
         )
     } else {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        viewModel.onUserInteraction() // 터치 이벤트 시 초기화
+                    })
+                },
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -94,6 +107,9 @@ fun PickerScreen(navController: NavController) {
                 }
             )
         }
+
+        AnimatedDimScreen(shouldDim = isAmbient)
+//        AnimatedDimScreen(shouldDim = true)
     }
 }
 

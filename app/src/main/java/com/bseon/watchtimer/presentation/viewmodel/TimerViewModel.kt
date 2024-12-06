@@ -7,5 +7,7 @@ import com.bseon.watchtimer.model.TimerState
 interface TimerViewModel {
     val customTimerState: LiveData<TimerState>
     val customTimerDuration: LiveData<Int>
+    val ambientState: LiveData<Boolean>
     fun onTimerIntent(intent: TimerIntent)
+    fun onUserInteraction()
 }

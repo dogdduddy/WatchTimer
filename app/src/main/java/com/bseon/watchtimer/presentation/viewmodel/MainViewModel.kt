@@ -8,14 +8,18 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.bseon.watchtimer.TimerService
 import com.bseon.watchtimer.model.TimerIntent
 import com.bseon.watchtimer.model.TimerState
 import com.bseon.watchtimer.utils.VibrationHelper
+import com.bseon.watchtimer.utils.activateAfterDelay
 import com.bseon.watchtimer.utils.toMinutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,6 +32,9 @@ class MainViewModel @Inject constructor (
     override val customTimerDuration: MutableLiveData<Int> = MutableLiveData(initialTimerDuration)
 
     override val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
+
+    private var ambientJob: Job? = null
+    override val ambientState = MutableLiveData<Boolean>(false)
 
     private val timerReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -48,9 +55,12 @@ class MainViewModel @Inject constructor (
 
         context.registerReceiver(timerReceiver, filter, Context.RECEIVER_EXPORTED)
         context.registerReceiver(finishedReceiver, finishedFilter, Context.RECEIVER_EXPORTED)
+
+        activeAmbientModeAfterDelay()
     }
 
     override fun onTimerIntent(intent: TimerIntent) {
+        onUserInteraction()
         when (intent) {
             is TimerIntent.TimerSettingIntent -> setTimerDuration(intent.duration.inc())
             TimerIntent.TimerStartedIntent -> startTimer()
@@ -110,9 +120,27 @@ class MainViewModel @Inject constructor (
         ContextCompat.startForegroundService(context, intent)
     }
 
+    override fun onUserInteraction() {
+        setAmbientState(false)
+        activeAmbientModeAfterDelay()
+    }
+
+    private fun setAmbientState(isAmbient: Boolean) {
+        ambientState.postValue(isAmbient)
+    }
+    private fun activeAmbientModeAfterDelay(delay: Long = 1000L * 4) {
+        ambientJob?.cancel()
+
+        ambientJob = viewModelScope.activateAfterDelay(delay) {
+            setAmbientState(true)
+        }
+    }
+
+
     override fun onCleared() {
         super.onCleared()
         context.unregisterReceiver(timerReceiver)
         context.unregisterReceiver(finishedReceiver)
+        ambientJob?.cancel()
     }
 }
