@@ -128,7 +128,7 @@ class MainViewModel @Inject constructor (
     private fun setAmbientState(isAmbient: Boolean) {
         ambientState.postValue(isAmbient)
     }
-    private fun activeAmbientModeAfterDelay(delay: Long = 1000L * 4) {
+    private fun activeAmbientModeAfterDelay(delay: Long = 1000L * 15) {
         ambientJob?.cancel()
 
         ambientJob = viewModelScope.activateAfterDelay(delay) {
