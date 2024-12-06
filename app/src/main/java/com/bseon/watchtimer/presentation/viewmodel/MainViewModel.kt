@@ -62,7 +62,7 @@ class MainViewModel @Inject constructor (
     override fun onTimerIntent(intent: TimerIntent) {
         onUserInteraction()
         when (intent) {
-            is TimerIntent.TimerSettingIntent -> setTimerDuration(intent.duration.inc())
+            is TimerIntent.TimerSettingIntent -> setTimerDuration(intent.duration)
             TimerIntent.TimerStartedIntent -> startTimer()
             TimerIntent.TimerPausedIntent -> pauseTimer()
             TimerIntent.TimerResumedIntent -> resumeTimer()

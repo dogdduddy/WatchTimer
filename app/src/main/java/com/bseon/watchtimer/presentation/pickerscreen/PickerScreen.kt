@@ -119,7 +119,7 @@ fun TimerContent(
                 state = pickerState,
                 contentDescription = "Number Picker",
             ) {
-                Text(text = "${it.inc()}", fontSize = 50.sp)
+                Text(text = "$it", fontSize = 50.sp)
             }
         } else {
             Text (
