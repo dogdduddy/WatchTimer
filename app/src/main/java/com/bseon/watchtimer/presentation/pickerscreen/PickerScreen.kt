@@ -60,57 +60,46 @@ fun PickerScreen(navController: NavController) {
         viewModel.onTimerIntent(TimerIntent.TimerSettingIntent(pickerState.selectedOption))
     }
 
-    if (isAmbient && timerState == TimerState.RUNNING) {
-        Text (
-            modifier = Modifier.fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        viewModel.onUserInteraction() // 터치 이벤트 시 초기화
-                    })
-                },
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            fontSize = 50.sp,
-            text = timeLeft.toString()
-        )
-    } else {
-        Column(
-            modifier = Modifier.fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        viewModel.onUserInteraction() // 터치 이벤트 시 초기화
-                    })
-                },
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    viewModel.onUserInteraction() // 터치 이벤트 시 초기화
+                })
+            },
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
 
-            TimerTitle()
+        TimerTitle(isAmbient && timerState == TimerState.RUNNING)
 
-            Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.height(5.dp))
 
-            TimerContent(timerState, pickerState, timeLeft)
+        TimerContent(timerState, pickerState, timeLeft)
 
-            Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.height(5.dp))
 
-            TimerButton(timerState,
-                onPrimaryActionClick = {
-                    when(timerState) {
-                        TimerState.RUNNING -> viewModel.onTimerIntent(TimerIntent.TimerPausedIntent)
-                        TimerState.PAUSED -> viewModel.onTimerIntent(TimerIntent.TimerResumedIntent)
-                        TimerState.STOPPED -> viewModel.onTimerIntent(TimerIntent.TimerStartedIntent)
-                        TimerState.FINISHED -> viewModel.onTimerIntent(TimerIntent.TimerFinishedIntent)
-                    }
-                },
-                onSecondaryActionClick = {
-                    viewModel.onTimerIntent(TimerIntent.TimerCancelledIntent)
+        TimerButton(
+            timerState,
+            isAmbient && timerState == TimerState.RUNNING,
+            onPrimaryActionClick = {
+                when(timerState) {
+                    TimerState.RUNNING -> viewModel.onTimerIntent(TimerIntent.TimerPausedIntent)
+                    TimerState.PAUSED -> viewModel.onTimerIntent(TimerIntent.TimerResumedIntent)
+                    TimerState.STOPPED -> viewModel.onTimerIntent(TimerIntent.TimerStartedIntent)
+                    TimerState.FINISHED -> viewModel.onTimerIntent(TimerIntent.TimerFinishedIntent)
                 }
-            )
-        }
-
-        AnimatedDimScreen(shouldDim = isAmbient)
-//        AnimatedDimScreen(shouldDim = true)
+            },
+            onSecondaryActionClick = {
+                viewModel.onTimerIntent(TimerIntent.TimerCancelledIntent)
+            }
+        )
     }
+
+    AnimatedDimScreen(shouldDim =
+        isAmbient && timerState != TimerState.RUNNING
+    )
+
 }
 
 @Composable

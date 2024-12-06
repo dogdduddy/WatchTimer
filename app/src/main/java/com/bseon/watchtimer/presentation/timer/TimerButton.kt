@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -16,8 +17,15 @@ import com.bseon.watchtimer.R
 import com.bseon.watchtimer.model.TimerState
 
 @Composable
-fun TimerButton(timerState: TimerState, onPrimaryActionClick: () -> Unit, onSecondaryActionClick: () -> Unit) {
-    Row {
+fun TimerButton(
+    timerState: TimerState,
+    isInVisible: Boolean,
+    onPrimaryActionClick: () -> Unit,
+    onSecondaryActionClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier.alpha(if (isInVisible) 0f else 1f),
+    ) {
         val painterResource = when(timerState) {
             TimerState.RUNNING -> R.drawable.ic_pause_btn
             TimerState.PAUSED -> R.drawable.ic_run_btn
