@@ -6,7 +6,10 @@
 
 package com.bseon.watchtimer.presentation
 
+import android.content.Context
 import android.os.Bundle
+import android.os.PowerManager
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -32,6 +35,8 @@ class MainActivity : ComponentActivity() {
     private val ambientCallback = AmbientObserver()
     private val ambientObserver = AmbientLifecycleObserver(this, ambientCallback)
 
+    private lateinit var wakeLock: PowerManager.WakeLock
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,6 +44,12 @@ class MainActivity : ComponentActivity() {
 
         val vibrationHelper = VibrationHelper(this)
         viewModel = MainViewModel(this, vibrationHelper)
+
+         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WatchTimer::WakeLock")
+        wakeLock.acquire()
 
         setContent {
             WearApp()
@@ -48,6 +59,9 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         lifecycle.removeObserver(ambientObserver)
+        if (::wakeLock.isInitialized && wakeLock.isHeld) {
+            wakeLock.release() // Wake Lock 해제
+        }
     }
 }
 
