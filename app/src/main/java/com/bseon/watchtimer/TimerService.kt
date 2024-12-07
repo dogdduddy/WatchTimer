@@ -166,7 +166,8 @@ class TimerService : Service() {
         const val CHANNEL_ID = "Timer_Notifications"
 
         const val MIllIS_IN_FUTURE = 1000 * 60  * 30L
-        const val MINUTES_TICK_INTERVAL = 1000 * 60L
+        const val MINUTES_TICK_INTERVAL = 1000L
+//        const val MINUTES_TICK_INTERVAL = 1000 * 60L
 
         // Intent Extras
         const val TIME_DURATION = "TIME_DURATION"

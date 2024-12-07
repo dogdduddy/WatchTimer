@@ -16,40 +16,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Picker
 import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberPickerState
+import com.bseon.watchtimer.MockApplication
 import com.bseon.watchtimer.TimerService
-import com.bseon.watchtimer.presentation.WearApp
-import com.bseon.watchtimer.presentation.timer.TimerButton
-import com.bseon.watchtimer.presentation.timer.TimerTitle
 import com.bseon.watchtimer.model.TimerIntent
 import com.bseon.watchtimer.model.TimerState
 import com.bseon.watchtimer.presentation.AnimatedDimScreen
-import com.bseon.watchtimer.presentation.viewmodel.FakeMainViewModel
+import com.bseon.watchtimer.presentation.WearApp
+import com.bseon.watchtimer.presentation.timer.TimerButton
+import com.bseon.watchtimer.presentation.timer.TimerTitle
 import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
-import com.bseon.watchtimer.presentation.viewmodel.TimerViewModel
 import com.bseon.watchtimer.utils.toMinutes
 
 
 @Composable
-fun PickerScreen(navController: NavController) {
+fun PickerScreen(viewModel: MainViewModel, navController: NavController) {
     val pickerState = rememberPickerState(60, 30)
-
-    val viewModel: TimerViewModel = if (LocalInspectionMode.current) {
-        FakeMainViewModel()
-    } else {
-        hiltViewModel<MainViewModel>()
-    }
 
     val isAmbient by viewModel.ambientState.observeAsState(false)
 
@@ -136,5 +127,5 @@ fun TimerContent(
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "App Preview")
 @Composable
 fun PickerPreview() {
-    WearApp()
+    WearApp(MainViewModel(MockApplication()))
 }

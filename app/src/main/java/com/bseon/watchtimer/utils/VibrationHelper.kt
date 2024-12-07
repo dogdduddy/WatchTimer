@@ -5,13 +5,9 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class VibrationHelper @Inject constructor(
-    @ApplicationContext private val context: Context
+class VibrationHelper (
+    private val context: Context
 ) {
 
     private lateinit var vibrator: Vibrator

@@ -12,6 +12,7 @@ import android.os.PowerManager
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,16 +22,15 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.ambient.AmbientLifecycleObserver
 import androidx.wear.compose.material.MaterialTheme
+import com.bseon.watchtimer.MockApplication
 import com.bseon.watchtimer.navigation.NavigationSystem
 import com.bseon.watchtimer.presentation.theme.WatchTimerTheme
-import com.bseon.watchtimer.utils.VibrationHelper
 import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
 import com.bseon.watchtimer.utils.AmbientObserver
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private lateinit var viewModel: MainViewModel
+
+    private val viewModel: MainViewModel by viewModels()
 
     private val ambientCallback = AmbientObserver()
     private val ambientObserver = AmbientLifecycleObserver(this, ambientCallback)
@@ -42,9 +42,6 @@ class MainActivity : ComponentActivity() {
 
         lifecycle.addObserver(ambientObserver)
 
-        val vibrationHelper = VibrationHelper(this)
-        viewModel = MainViewModel(this, vibrationHelper)
-
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -52,7 +49,7 @@ class MainActivity : ComponentActivity() {
         wakeLock.acquire()
 
         setContent {
-            WearApp()
+            WearApp(viewModel)
         }
     }
 
@@ -66,14 +63,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WearApp(startDestination: String = "picker") {
+fun WearApp(viewModel: MainViewModel, startDestination: String = "picker") {
     WatchTimerTheme {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background)
         ) {
-            NavigationSystem(startDestination)
+            NavigationSystem(viewModel, startDestination)
         }
     }
 }
@@ -82,5 +79,5 @@ fun WearApp(startDestination: String = "picker") {
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
-    WearApp()
+    WearApp(MainViewModel(MockApplication()))
 }

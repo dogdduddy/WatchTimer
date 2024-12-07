@@ -6,17 +6,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.bseon.watchtimer.presentation.pickerscreen.PickerScreen
 import com.bseon.watchtimer.presentation.rotaryinput.RotaryInputScreen
+import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
 
 @Composable
-fun NavigationSystem(startDestination: String) {
+fun NavigationSystem(viewModel: MainViewModel, startDestination: String) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable("picker") {
-            PickerScreen(navController)
+            PickerScreen(viewModel, navController)
         }
         composable("rotary") {
-            RotaryInputScreen(navController)
+            RotaryInputScreen(viewModel, navController)
         }
     }
 }

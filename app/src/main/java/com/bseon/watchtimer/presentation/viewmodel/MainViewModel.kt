@@ -1,13 +1,13 @@
 package com.bseon.watchtimer.presentation.viewmodel
 
+import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.util.Log
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bseon.watchtimer.TimerService
 import com.bseon.watchtimer.model.TimerIntent
@@ -15,26 +15,24 @@ import com.bseon.watchtimer.model.TimerState
 import com.bseon.watchtimer.utils.VibrationHelper
 import com.bseon.watchtimer.utils.activateAfterDelay
 import com.bseon.watchtimer.utils.toMinutes
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class MainViewModel @Inject constructor (
-    @ApplicationContext private val context: Context,
-    private val vibrationHelper: VibrationHelper
-): ViewModel(), TimerViewModel {
+
+class MainViewModel (
+    application: Application
+): AndroidViewModel(application) {
+
+    private val context = application.applicationContext
+
+    private val vibrationHelper = VibrationHelper(context)
 
     private var initialTimerDuration: Int = TimerService.MIllIS_IN_FUTURE.toMinutes()
-    override val customTimerDuration: MutableLiveData<Int> = MutableLiveData(initialTimerDuration)
+    val customTimerDuration: MutableLiveData<Int> = MutableLiveData(initialTimerDuration)
 
-    override val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
+    val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
 
     private var ambientJob: Job? = null
-    override val ambientState = MutableLiveData<Boolean>(false)
+    val ambientState = MutableLiveData<Boolean>(false)
 
     private val timerReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -59,7 +57,7 @@ class MainViewModel @Inject constructor (
         activeAmbientModeAfterDelay()
     }
 
-    override fun onTimerIntent(intent: TimerIntent) {
+    fun onTimerIntent(intent: TimerIntent) {
         onUserInteraction()
         when (intent) {
             is TimerIntent.TimerSettingIntent -> setTimerDuration(intent.duration)
@@ -120,7 +118,7 @@ class MainViewModel @Inject constructor (
         ContextCompat.startForegroundService(context, intent)
     }
 
-    override fun onUserInteraction() {
+    fun onUserInteraction() {
         setAmbientState(false)
         activeAmbientModeAfterDelay()
     }
