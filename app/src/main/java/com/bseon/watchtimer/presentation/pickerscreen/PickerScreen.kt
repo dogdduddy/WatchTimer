@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,6 +48,21 @@ fun PickerScreen(viewModel: MainViewModel, navController: NavController) {
     val timerState by viewModel.customTimerState.observeAsState(TimerState.STOPPED)
     val timeLeft by viewModel.customTimerDuration.observeAsState(TimerService.MIllIS_IN_FUTURE.toMinutes())
 
+    val onPrimaryClick = remember(timerState) {
+        {
+            when (timerState) {
+                TimerState.RUNNING -> viewModel.onTimerIntent(TimerIntent.TimerPausedIntent)
+                TimerState.PAUSED -> viewModel.onTimerIntent(TimerIntent.TimerResumedIntent)
+                TimerState.STOPPED -> viewModel.onTimerIntent(TimerIntent.TimerStartedIntent)
+                TimerState.FINISHED -> viewModel.onTimerIntent(TimerIntent.TimerFinishedIntent)
+            }
+        }
+    }
+
+    val onSecondaryClick = remember {
+        { viewModel.onTimerIntent(TimerIntent.TimerCancelledIntent) }
+    }
+
     LaunchedEffect(pickerState.selectedOption) {
         viewModel.onTimerIntent(TimerIntent.TimerSettingIntent(pickerState.selectedOption))
     }
@@ -73,17 +89,8 @@ fun PickerScreen(viewModel: MainViewModel, navController: NavController) {
         TimerButton(
             timerState,
             isAmbient && timerState == TimerState.RUNNING,
-            onPrimaryActionClick = {
-                when(timerState) {
-                    TimerState.RUNNING -> viewModel.onTimerIntent(TimerIntent.TimerPausedIntent)
-                    TimerState.PAUSED -> viewModel.onTimerIntent(TimerIntent.TimerResumedIntent)
-                    TimerState.STOPPED -> viewModel.onTimerIntent(TimerIntent.TimerStartedIntent)
-                    TimerState.FINISHED -> viewModel.onTimerIntent(TimerIntent.TimerFinishedIntent)
-                }
-            },
-            onSecondaryActionClick = {
-                viewModel.onTimerIntent(TimerIntent.TimerCancelledIntent)
-            }
+            onPrimaryActionClick = onPrimaryClick,
+            onSecondaryActionClick = onSecondaryClick,
         )
     }
 
