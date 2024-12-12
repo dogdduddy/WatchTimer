@@ -62,14 +62,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WearApp(viewModel: MainViewModel, startDestination: String = "picker") {
+fun WearApp(viewModel: MainViewModel) {
     WatchTimerTheme {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background)
         ) {
-//            NavigationSystem(viewModel, startDestination)
             SwipeNavigation(viewModel)
         }
     }

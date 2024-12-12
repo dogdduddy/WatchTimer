@@ -1,6 +1,7 @@
 package com.bseon.watchtimer.presentation.rotaryinput
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.Text
@@ -16,5 +17,5 @@ fun RotaryInputScreen(viewModel: MainViewModel) {
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "App Preview")
 @Composable
 fun RotaryPreview() {
-    WearApp(MainViewModel(MockApplication()), "rotary")
+    RotaryInputScreen(MainViewModel(LocalContext.current))
 }
