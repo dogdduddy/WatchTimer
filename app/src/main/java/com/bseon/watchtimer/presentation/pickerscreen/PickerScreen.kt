@@ -46,7 +46,7 @@ fun PickerScreen(viewModel: MainViewModel) {
     val isAmbient by viewModel.ambientState.observeAsState(false)
 
     val timerState by viewModel.customTimerState.observeAsState(TimerState.STOPPED)
-    val timeLeft by viewModel.customTimerDuration.observeAsState(TimerService.MIllIS_IN_FUTURE.toMinutes())
+    val timeLeft by viewModel.customTimerDuration.observeAsState(TimerService.DEFAULT_TIMER_DURATION.toMinutes())
 
     val onPrimaryClick = remember(timerState) {
         {

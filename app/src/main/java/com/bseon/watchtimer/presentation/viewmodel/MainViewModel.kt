@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(
 
     private val vibrationHelper = VibrationHelper(context)
 
-    private var initialTimerDuration: Int = TimerService.MIllIS_IN_FUTURE.toMinutes()
+    private var initialTimerDuration: Int = TimerService.DEFAULT_TIMER_DURATION.toMinutes()
     val customTimerDuration: MutableLiveData<Int> = MutableLiveData(initialTimerDuration)
 
     val customTimerState: MutableLiveData<TimerState> = MutableLiveData(TimerState.STOPPED)
