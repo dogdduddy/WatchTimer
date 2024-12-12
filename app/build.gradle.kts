@@ -79,6 +79,12 @@ dependencies {
     // Jetpack Navigation
     implementation("androidx.navigation:navigation-compose:2.7.3")
 
+    // Hilt
     implementation("com.google.dagger:hilt-android:2.48")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
+
+    // Pager
+    implementation("com.google.accompanist:accompanist-pager:0.32.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
+
 }

@@ -22,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.wear.compose.material.Picker
 import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Text
@@ -40,7 +39,7 @@ import com.bseon.watchtimer.utils.toMinutes
 
 
 @Composable
-fun PickerScreen(viewModel: MainViewModel, navController: NavController) {
+fun PickerScreen(viewModel: MainViewModel) {
     val pickerState = rememberPickerState(60, 30)
 
     val isAmbient by viewModel.ambientState.observeAsState(false)

@@ -18,12 +18,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.ambient.AmbientLifecycleObserver
 import androidx.wear.compose.material.MaterialTheme
-import com.bseon.watchtimer.MockApplication
-import com.bseon.watchtimer.navigation.NavigationSystem
+import com.bseon.watchtimer.navigation.SwipeNavigation
 import com.bseon.watchtimer.presentation.theme.WatchTimerTheme
 import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
 import com.bseon.watchtimer.utils.AmbientObserver
@@ -72,7 +69,8 @@ fun WearApp(viewModel: MainViewModel, startDestination: String = "picker") {
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background)
         ) {
-            NavigationSystem(viewModel, startDestination)
+//            NavigationSystem(viewModel, startDestination)
+            SwipeNavigation(viewModel)
         }
     }
 }
