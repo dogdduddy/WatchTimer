@@ -27,7 +27,9 @@ import com.bseon.watchtimer.navigation.NavigationSystem
 import com.bseon.watchtimer.presentation.theme.WatchTimerTheme
 import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
 import com.bseon.watchtimer.utils.AmbientObserver
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
@@ -73,11 +75,4 @@ fun WearApp(viewModel: MainViewModel, startDestination: String = "picker") {
             NavigationSystem(viewModel, startDestination)
         }
     }
-}
-
-
-@Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
-@Composable
-fun DefaultPreview() {
-    WearApp(MainViewModel(MockApplication()))
 }

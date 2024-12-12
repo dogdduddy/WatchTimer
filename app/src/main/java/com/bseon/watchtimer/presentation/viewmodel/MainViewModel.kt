@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bseon.watchtimer.TimerService
 import com.bseon.watchtimer.model.TimerIntent
@@ -15,14 +16,16 @@ import com.bseon.watchtimer.model.TimerState
 import com.bseon.watchtimer.utils.VibrationHelper
 import com.bseon.watchtimer.utils.activateAfterDelay
 import com.bseon.watchtimer.utils.toMinutes
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
+import javax.inject.Inject
 
 
-class MainViewModel (
-    application: Application
-): AndroidViewModel(application) {
-
-    private val context = application.applicationContext
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    @ApplicationContext private val context: Context
+): ViewModel() {
 
     private val vibrationHelper = VibrationHelper(context)
 
