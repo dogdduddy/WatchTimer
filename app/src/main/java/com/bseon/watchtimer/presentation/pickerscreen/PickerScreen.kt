@@ -1,5 +1,6 @@
 package com.bseon.watchtimer.presentation.pickerscreen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Picker
 import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Text
@@ -69,6 +71,7 @@ fun PickerScreen(viewModel: MainViewModel) {
 
     Column(
         modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colors.background)
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     viewModel.onUserInteraction() // 터치 이벤트 시 초기화
