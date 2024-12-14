@@ -20,6 +20,10 @@ fun calculateProgress(currentTimerValue: Int, maxTimerValue: Int): Float {
     return (currentTimerValue.toFloat() / maxTimerValue).coerceIn(0f, 1f)
 }
 
+fun Float.toMinutes(): Int {
+    return (this * 60).toInt()
+}
+
 
 fun CoroutineScope.activateAfterDelay(delay: Long, action: () -> Unit): Job {
     return this.launch {
