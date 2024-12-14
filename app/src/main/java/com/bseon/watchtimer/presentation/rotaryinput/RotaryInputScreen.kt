@@ -116,28 +116,25 @@ fun RotaryInputScreen(viewModel: MainViewModel, onNavigateToNextPage: () -> Unit
             indicatorColor = TartOrange
         )
 
-        Column(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
 
-            Text(
-                color = Color.White,
-                fontSize = 50.sp,
-                text = timeLeft.toString()
-            )
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            color = Color.White,
+            fontSize = 50.sp,
+            text = timeLeft.toString()
+        )
 
-            Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
-            TimerButton(
-                timerState,
-                isAmbient && timerState == TimerState.RUNNING,
-                onPrimaryActionClick = onPrimaryClick,
-                onSecondaryActionClick = onSecondaryClick,
-            )
-
-            Spacer(modifier = Modifier.height(25.dp))
-        }
+        TimerButton(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 25.dp),
+            timerState = timerState,
+            isInVisible = isAmbient && timerState == TimerState.RUNNING,
+            onPrimaryActionClick = onPrimaryClick,
+            onSecondaryActionClick = onSecondaryClick,
+        )
 
         NavigationButton(
             modifier = Modifier

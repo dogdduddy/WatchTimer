@@ -69,51 +69,67 @@ fun PickerScreen(viewModel: MainViewModel, onNavigateToNextPage: () -> Unit) {
         viewModel.onTimerIntent(TimerIntent.TimerSettingIntent(pickerState.selectedOption))
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
             .background(MaterialTheme.colors.background)
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     viewModel.onUserInteraction() // 터치 이벤트 시 초기화
                 })
-            },
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+            }
     ) {
 
-        TimerTitle(isAmbient && timerState == TimerState.RUNNING)
+        TimerTitle(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 25.dp),
+            isInVisible = isAmbient && timerState == TimerState.RUNNING
+        )
 
-        Spacer(modifier = Modifier.height(5.dp))
-
-        TimerContent(timerState, pickerState, timeLeft, onNavigateToNextPage)
-
-        Spacer(modifier = Modifier.height(5.dp))
+        TimerContent(
+            modifier = Modifier.align(Alignment.Center),
+            timerState = timerState,
+            pickerState = pickerState,
+            timeLeft = timeLeft
+        )
 
         TimerButton(
-            timerState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 25.dp),
+            timerState = timerState,
             isAmbient && timerState == TimerState.RUNNING,
             onPrimaryActionClick = onPrimaryClick,
             onSecondaryActionClick = onSecondaryClick,
         )
+
+        NavigationButton(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 10.dp)
+        ) { onNavigateToNextPage() }
+
+        AnimatedDimScreen(
+            shouldDim = isAmbient && timerState != TimerState.RUNNING
+        )
     }
-
-    AnimatedDimScreen(shouldDim =
-        isAmbient && timerState != TimerState.RUNNING
-    )
-
 }
 
 @Composable
 fun TimerContent(
+    modifier: Modifier = Modifier,
     timerState: TimerState,
     pickerState: PickerState,
     timeLeft: Int,
-    onNavigateToNextPage: () -> Unit,
 ) {
+    val combinedModifier = remember(modifier) {
+        modifier.fillMaxWidth()
+            .height(90.dp)
+    }
+
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(90.dp),
+        modifier = combinedModifier,
         contentAlignment = Alignment.Center,
     ) {
         if (timerState == TimerState.STOPPED) {
@@ -132,12 +148,6 @@ fun TimerContent(
                 text = timeLeft.toString()
             )
         }
-
-        NavigationButton(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(end = 10.dp)
-        ) { onNavigateToNextPage() }
     }
 }
 

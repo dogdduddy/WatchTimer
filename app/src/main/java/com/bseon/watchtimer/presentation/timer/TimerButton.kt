@@ -3,6 +3,8 @@ package com.bseon.watchtimer.presentation.timer
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -18,11 +20,15 @@ import com.bseon.watchtimer.utils.StateLessImage
 
 @Composable
 fun TimerButton(
+    modifier: Modifier = Modifier,
     timerState: TimerState,
     isInVisible: Boolean,
     onPrimaryActionClick: () -> Unit,
     onSecondaryActionClick: () -> Unit,
 ) {
+    val combinedModifier = remember(modifier) {
+        modifier.alpha(if (isInVisible) 0f else 1f)
+    }
 
    val primaryModifier = remember {
         Modifier
@@ -39,7 +45,7 @@ fun TimerButton(
     }
 
     Row(
-        modifier = Modifier.alpha(if (isInVisible) 0f else 1f),
+        modifier = combinedModifier,
     ) {
         val painterResource = when (timerState) {
                 TimerState.RUNNING -> R.drawable.ic_pause_btn
