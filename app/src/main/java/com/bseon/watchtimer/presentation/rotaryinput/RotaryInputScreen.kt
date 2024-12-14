@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,6 +35,7 @@ import com.bseon.watchtimer.model.TimerIntent
 import com.bseon.watchtimer.model.TimerState
 import com.bseon.watchtimer.presentation.AnimatedDimScreen
 import com.bseon.watchtimer.presentation.theme.TartOrange
+import com.bseon.watchtimer.presentation.timer.NavigationButton
 import com.bseon.watchtimer.presentation.timer.TimerButton
 import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
 import com.bseon.watchtimer.utils.calculateProgress
@@ -42,7 +44,7 @@ import java.lang.Math.toDegrees
 import kotlin.math.atan2
 
 @Composable
-fun RotaryInputScreen(viewModel: MainViewModel) {
+fun RotaryInputScreen(viewModel: MainViewModel, onNavigateToNextPage: () -> Unit) {
 
     val isAmbient by viewModel.ambientState.observeAsState(false)
 
@@ -137,6 +139,13 @@ fun RotaryInputScreen(viewModel: MainViewModel) {
             Spacer(modifier = Modifier.height(25.dp))
         }
 
+        NavigationButton(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .padding(start = 10.dp),
+            rotate = 180f,
+        ) { onNavigateToNextPage() }
+
         AnimatedDimScreen(shouldDim =
             isAmbient && timerState != TimerState.RUNNING
         )
@@ -146,5 +155,5 @@ fun RotaryInputScreen(viewModel: MainViewModel) {
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "App Preview")
 @Composable
 fun RotaryPreview() {
-    RotaryInputScreen(MainViewModel(LocalContext.current))
+    RotaryInputScreen(MainViewModel(LocalContext.current)) {}
 }

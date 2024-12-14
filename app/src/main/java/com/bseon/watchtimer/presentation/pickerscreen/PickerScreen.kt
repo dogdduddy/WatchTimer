@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,12 +30,11 @@ import androidx.wear.compose.material.Picker
 import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberPickerState
-import com.bseon.watchtimer.MockApplication
 import com.bseon.watchtimer.TimerService
 import com.bseon.watchtimer.model.TimerIntent
 import com.bseon.watchtimer.model.TimerState
 import com.bseon.watchtimer.presentation.AnimatedDimScreen
-import com.bseon.watchtimer.presentation.WearApp
+import com.bseon.watchtimer.presentation.timer.NavigationButton
 import com.bseon.watchtimer.presentation.timer.TimerButton
 import com.bseon.watchtimer.presentation.timer.TimerTitle
 import com.bseon.watchtimer.presentation.viewmodel.MainViewModel
@@ -42,7 +42,7 @@ import com.bseon.watchtimer.utils.toMinutes
 
 
 @Composable
-fun PickerScreen(viewModel: MainViewModel) {
+fun PickerScreen(viewModel: MainViewModel, onNavigateToNextPage: () -> Unit) {
     val pickerState = rememberPickerState(60, 30)
 
     val isAmbient by viewModel.ambientState.observeAsState(false)
@@ -85,7 +85,7 @@ fun PickerScreen(viewModel: MainViewModel) {
 
         Spacer(modifier = Modifier.height(5.dp))
 
-        TimerContent(timerState, pickerState, timeLeft)
+        TimerContent(timerState, pickerState, timeLeft, onNavigateToNextPage)
 
         Spacer(modifier = Modifier.height(5.dp))
 
@@ -108,6 +108,7 @@ fun TimerContent(
     timerState: TimerState,
     pickerState: PickerState,
     timeLeft: Int,
+    onNavigateToNextPage: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -131,11 +132,17 @@ fun TimerContent(
                 text = timeLeft.toString()
             )
         }
+
+        NavigationButton(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 10.dp)
+        ) { onNavigateToNextPage() }
     }
 }
 
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "App Preview")
 @Composable
 fun PickerPreview() {
-    PickerScreen(MainViewModel(LocalContext.current))
+    PickerScreen(MainViewModel(LocalContext.current)) {}
 }
